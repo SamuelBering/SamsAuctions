@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,6 +43,14 @@ namespace SamsAuctions
                 facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
             });
 
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(20);//You can set Time
+            });
+
+            services.AddAutoMapper();
+
             services.AddMvc();
         }
 
@@ -56,6 +66,8 @@ namespace SamsAuctions
 
             app.UseAuthentication();
 
+            app.UseSession();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -63,6 +75,7 @@ namespace SamsAuctions
                     "{controller=home}/{action=index}/{id?}"
                     );
             });
+
 
             AppIdentityDbContext.CreateDefaultRoles(app, Configuration).Wait();
             AppIdentityDbContext.CreateDefaultUsers(app, Configuration).Wait();

@@ -1,8 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SamsAuctions.Infrastructure;
 using SamsAuctions.Models;
 using SamsAuctions.Models.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -13,11 +19,14 @@ namespace Users.Controllers
     {
         private UserManager<AppUser> userManager;
         private SignInManager<AppUser> signInManager;
+        private AppIdentityDbContext appIdentityDbContext;
 
-        public AccountController(UserManager<AppUser> usrMgr, SignInManager<AppUser> signinMgr)
+        public AccountController(UserManager<AppUser> usrMgr, SignInManager<AppUser> signinMgr, AppIdentityDbContext appIdentityDbC)
         {
             userManager = usrMgr;
             signInManager = signinMgr;
+            appIdentityDbContext = appIdentityDbC;
+
         }
 
         [AllowAnonymous]
@@ -34,12 +43,16 @@ namespace Users.Controllers
             return Challenge(properties, "Facebook");
         }
 
-        private async Task<IdentityResult> CreateAssociatedAccount(string username, ExternalLoginInfo info)
+        private async Task<IdentityResult> CreateAssociatedAccount(AssociateAccountViewModel associateAccountViewModel,
+                                                                    ExternalLoginInfo info)
         {
 
             AppUser user = new AppUser
             {
-                UserName = username,
+                UserName = associateAccountViewModel.Email,
+                FirstName=associateAccountViewModel.FirstName,
+                LastName=associateAccountViewModel.LastName,
+                Email=associateAccountViewModel.Email,        
             };
 
             IdentityResult result = await userManager.CreateAsync(user);
@@ -53,12 +66,61 @@ namespace Users.Controllers
             return result;
         }
 
+        [AllowAnonymous]
+        public async Task<IActionResult> AssociateAccountCallback()
+        {
+            ExternalLoginInfo info = await signInManager.GetExternalLoginInfoAsync();
+
+            var associateAccountVM = HttpContext.Session.GetJson<AssociateAccountViewModel>("AssociateAccountViewModel");
+
+            var createResult = await CreateAssociatedAccount(associateAccountVM, info);
+
+            if (createResult.Succeeded)
+            {
+                await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                foreach (IdentityError error in createResult.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+
+            return View("AssociateAccount", associateAccountVM);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public IActionResult AssociateAccount(AssociateAccountViewModel associateAccountVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var properties = signInManager.ConfigureExternalAuthenticationProperties("Facebook", Url.Action("AssociateAccountCallback", "Account"));
+
+                HttpContext.Session.SetJson("AssociateAccountViewModel", associateAccountVM);
+
+
+                return Challenge(properties, "Facebook");
+                //ExternalLoginInfo info = ViewData["ExternalLoginInfo"] as ExternalLoginInfo;
+                //var debug = ViewData["Samuel"] as string;
+
+                //var info = HttpContext.Session.GetJson<ExternalLoginInfo>("ExternalLoginInfo");
+            }
+
+            return View("AssociateAccount", associateAccountVM);
+        }
+
         //http://localhost:50278/account/loginfacebookcallback 
         [AllowAnonymous]
         public async Task<IActionResult> LoginFacebookCallback()
         {
 
             ExternalLoginInfo info = await signInManager.GetExternalLoginInfoAsync();
+            //HttpContext.Session.SetJson("ExternalLoginInfo", info);
 
             await signInManager.SignOutAsync();
             var signInResult = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
@@ -66,23 +128,18 @@ namespace Users.Controllers
             if (!signInResult.Succeeded)
             {
                 var emailClaim = info.Principal.FindFirst(c => c.Type.Contains("emailaddress"));
-                var createResult = await CreateAssociatedAccount(emailClaim.Value, info);
-
-                if (createResult.Succeeded)
+                var givenNameClaim = info.Principal.FindFirst(c => c.Type.Contains("givenname"));
+                var surnameClaim = info.Principal.FindFirst(c => c.Type.Contains("surname"));
+                var associateAccountVM = new AssociateAccountViewModel
                 {
-                    await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+                    FirstName = givenNameClaim.Value,
+                    LastName = surnameClaim.Value,
+                    Email = emailClaim.Value
+                };
 
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    foreach (IdentityError error in createResult.Errors)
-                    {
-                        ModelState.AddModelError("", error.Description);
-                    }
-                }
+                return View("AssociateAccount", associateAccountVM);
 
-                return RedirectToAction("Login");
+
             }
 
             return RedirectToAction("Index", "Home");
@@ -135,47 +192,85 @@ namespace Users.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //[AllowAnonymous]
-        //public IActionResult Register()
-        //{
-        //    return View();
-        //}
+        [HttpPost]
+        public async Task<JsonResult> DeleteAllRegularUsers()
+        {
 
-        //[HttpPost]
-        //[AllowAnonymous]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Register(CreateModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        AppUser user = new AppUser
-        //        {
-        //            UserName = model.Email,
-        //            FirstName = model.FirstName,
-        //            LastName = model.LastName,
-        //            StreetAddress = model.StreetAddress,
-        //            ZipCode = model.ZipCode,
-        //            PostTown = model.PostTown,
-        //            Email = model.Email,
-        //        };
+            using (var transaction = appIdentityDbContext.Database.BeginTransaction())
+            {
+                var allUsers = userManager.Users.ToList();
 
-        //        IdentityResult result = await userManager.CreateAsync(user, model.Password);
-        //        if (result.Succeeded)
-        //        {
-        //            await userManager.AddToRoleAsync(user, "RegularUser");
+                foreach (var user in allUsers)
+                {
+                    try
+                    {
+                        var rolesForUser = await userManager.GetRolesAsync(user) as List<string>;
+                        var isRegularUser = rolesForUser.Any(r => r == "Regular");
 
-        //            return RedirectToAction("Index", "Home");
-        //        }
-        //        else
-        //        {
-        //            foreach (IdentityError error in result.Errors)
-        //            {
-        //                ModelState.AddModelError("", error.Description);
-        //            }
-        //        }
-        //    }
-        //    return View(model);
-        //}
+                        if (isRegularUser)
+                        {
+                            foreach (var role in rolesForUser)
+                                await userManager.RemoveFromRoleAsync(user, role);
+                            //List Logins associated with user
+                            var logins = await userManager.GetLoginsAsync(user);
+                            foreach (var login in logins)
+                                await userManager.RemoveLoginAsync(user, login.LoginProvider, login.ProviderKey);
+
+                            //Delete User
+                            await userManager.DeleteAsync(user);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(new { Status = "Error", e.Message, e.StackTrace });
+                    }
+                }
+
+                transaction.Commit();
+            }
+
+            return Json(new { Status = "ok" });
+        }
+
+        [AllowAnonymous]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                AppUser user = new AppUser
+                {
+                    UserName = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                };
+
+                IdentityResult result = await userManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, "Regular");
+
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    foreach (IdentityError error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+            }
+            return View(model);
+        }
 
         [AllowAnonymous]
         public IActionResult AccessDenied(string returnUrl)

@@ -1,0 +1,67 @@
+﻿
+@model RegisterViewModel
+
+
+@{
+    ViewData["Title"] = "Registrering";
+}
+
+
+<!-- Modal -->
+<div id="registerAccountModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <a asp-action="Login" class="close">&times;</a>
+                <h4 class="modal-title">Registrera konto</h4>
+            </div>
+            <div class="modal-body">               
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <form asp-action="Register" method="post">
+                    <div class="form-group">
+                        <label asp-for="FirstName"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="LastName"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password"></label>
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ConfirmPassword"></label>
+                        <input asp-for="ConfirmPassword" class="form-control" />
+                        <span asp-validation-for="ConfirmPassword"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Spara</button>
+                    <a asp-action="Login" class="btn btn-secondary">Avbryt</a>
+                </form>
+
+
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(window).on('load', () => {
+            $('#registerAccountModal').modal('show');
+        });
+    </script>
+}
