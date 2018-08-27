@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using SamsAuctions.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using SamsAuctions.Infrastructure;
 
 namespace SamsAuctions.DAL
 {
@@ -22,11 +23,9 @@ namespace SamsAuctions.DAL
 
         public async Task AddOrUpdateAuction(AuctionViewModel viewModel)
         {
-            var result = Mapper.Map<AuctionViewModel, Auction>(viewModel);
+            var auction = Mapper.Map<AuctionViewModel, Auction>(viewModel);
 
-            //var query = "/api/auktion";
-
-
+            await Post("auktion", auction);
 
         }
 
@@ -64,23 +63,9 @@ namespace SamsAuctions.DAL
                 HttpResponseMessage response =
                        await client.PostAsync($"/api/{query}",new JsonContent(model));
                 response.EnsureSuccessStatusCode();
-
-                var data = await response.Content.ReadAsStringAsync();
-
-                //DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
-                //Stream responseStream = await response.Content.ReadAsStreamAsync();
-                //T data = (T)serializer.ReadObject(responseStream);
-                //var answer = await response.Content.ReadAsStringAsync();
-             
             }
         }
-
-        public class JsonContent : StringContent
-        {
-            public JsonContent(object obj) :
-                base(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json")
-            { }
-        }
+       
 
     }
 }

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SamsAuctions.DAL;
 using SamsAuctions.Models;
 
 namespace SamsAuctions
@@ -48,6 +49,8 @@ namespace SamsAuctions
             services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromMinutes(20);//You can set Time
             });
+
+            services.AddTransient<IAuctionsRepository, AuctionsRepository>();
 
             services.AddAutoMapper();
 
