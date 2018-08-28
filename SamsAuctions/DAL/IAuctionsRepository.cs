@@ -9,5 +9,6 @@ namespace SamsAuctions.DAL
     public interface IAuctionsRepository
     {
         Task AddOrUpdateAuction(AuctionViewModel viewModel);
+        Task<List<AuctionViewModel>> GetAllAuctions(int groupCode);
     }
 }

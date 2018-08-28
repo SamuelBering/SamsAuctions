@@ -26,6 +26,21 @@ namespace SamsAuctions.DAL
             var auction = Mapper.Map<AuctionViewModel, Auction>(viewModel);
 
             await Post("auktion", auction);
+        }
+
+        public async Task<List<AuctionViewModel>> GetAllAuctions(int groupCode)
+        {
+
+            DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings
+            {
+                DateTimeFormat = new System.Runtime.Serialization.DateTimeFormat("yyyy-MM-dd'T'HH:mm:ss")
+            };
+
+            var auctionList =await Get<List<Auction>>($"auktion/{groupCode}", settings);
+
+            var auctionViewModelList = Mapper.Map<IList<Auction>, IList<AuctionViewModel>>(auctionList);
+
+            return auctionViewModelList as List<AuctionViewModel>;
 
         }
 
@@ -37,7 +52,7 @@ namespace SamsAuctions.DAL
             MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        private async Task<T> Get<T>(string query)
+        private async Task<T> Get<T>(string query, DataContractJsonSerializerSettings settings)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -45,8 +60,8 @@ namespace SamsAuctions.DAL
                 SetupRequest(client);
                 HttpResponseMessage response =
                        await client.GetAsync($"/api/{query}");
-                response.EnsureSuccessStatusCode();             
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T)); 
+                response.EnsureSuccessStatusCode();
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T), settings); 
                 Stream responseStream = await response.Content.ReadAsStreamAsync();              
                 T data = (T)serializer.ReadObject(responseStream);
                 var answer = await response.Content.ReadAsStringAsync();

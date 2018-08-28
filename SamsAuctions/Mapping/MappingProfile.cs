@@ -15,5 +15,15 @@ public class MappingProfile : Profile
            .ForMember(a => a.StartDatum, b => b.MapFrom(c => c.StartDate))
             .ForMember(a => a.Titel, b => b.MapFrom(c => c.Title))
            .ForMember(a => a.Utropspris, b => b.MapFrom(c => c.ReservationPrice));
+
+        CreateMap<Auction, AuctionViewModel>()
+          .ForMember(a => a.AuctionId, b => b.MapFrom(c => c.AuktionID))
+          .ForMember(a => a.Description, b => b.MapFrom(c => c.Beskrivning))
+           .ForMember(a => a.GroupCode, b => b.MapFrom(c => c.Gruppkod))
+          .ForMember(a => a.CreatedBy, b => b.MapFrom(c => c.SkapadAv))
+           .ForMember(a => a.EndDate, b => b.MapFrom(c => c.SlutDatum))
+          .ForMember(a => a.StartDate, b => b.MapFrom(c => c.StartDatum))
+           .ForMember(a => a.Title, b => b.MapFrom(c => c.Titel))
+          .ForMember(a => a.ReservationPrice, b => b.MapFrom(c => c.Utropspris));
     }
 }

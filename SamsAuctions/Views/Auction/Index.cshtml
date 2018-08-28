@@ -1,8 +1,97 @@
 ﻿
+@model AuctionsIndexViewModel
+
 @{
     ViewData["Title"] = "Index";
 }
 
 <h2>Index</h2>
 
-<a asp-action="EditAuction">Lägg till auktion</a>
+
+<p>
+    <a asp-action="EditAuction">Lägg till auktion</a>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+
+
+
+            @*Titel: <input type="text" name="TitelFilter" value="@ViewData["CurrentTitelFilter"]" />*@
+            @*Category: <input type="text" name="CategoryFilter" value="@ViewData["CurrentCategoryFilter"]" />*@
+            Titel: <input asp-for="TitleFilter" />
+            Beskrivning: <input asp-for="DescriptionFilter" />
+
+            <input type="submit" value="Sök" class="btn btn-default" /> |
+            <a asp-action="Index">Tillbaka till hela listan</a>
+        </p>
+    </div>
+</form>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Title
+                @*<a asp-action="Index" asp-route-sortOrder="@Model.EndDateSortParam">
+
+                    </a>*@
+            </th>
+            <th>
+                Beskrivning
+
+            </th>
+            <th>
+                Start datum
+                @*<a asp-action="Index" asp-route-sortOrder="@ViewData["PostedSortParm"]">
+                        @Html.DisplayNameFor(model => model.DateTime)
+                    </a>*@
+            </th>
+            <th>
+                Slut datum
+            </th>
+            <th>
+                Utropspris
+            </th>
+            <th>
+                Skapad av
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Auctions)
+        {
+        <tr>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.AuctionId">
+                    @Html.DisplayFor(modelItem => item.Title)
+                </a>
+            </td>
+            <td>
+                @item.Description
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReservationPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedBy)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.AuctionId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.AuctionId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.AuctionId">Delete</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

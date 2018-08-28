@@ -14,16 +14,53 @@ namespace SamsAuctions.Controllers
     {
         private IAuctionsRepository _repository;
 
+        const int groupCode= 7;
+
         public AuctionController(IAuctionsRepository repository)
         {
             _repository = repository;
         }
 
-        public IActionResult Index()
+       
+       
+        public async Task<IActionResult> Index(string sortOrder, string titleFilter, string descriptionFilter)
         {
 
-            return View();
+            var model = new AuctionsIndexViewModel(sortOrder, titleFilter, descriptionFilter);
+
+            model.Auctions = await _repository.GetAllAuctions(groupCode);
+
+          
+            if (!String.IsNullOrEmpty(titleFilter) || !String.IsNullOrEmpty(descriptionFilter))
+            {
+                titleFilter = titleFilter ?? "";
+                descriptionFilter = descriptionFilter ?? "";
+                model.Auctions = model.Auctions.Where(a => a.Title.Contains(titleFilter) && a.Description.Contains(descriptionFilter)).ToList();
+            }
+
+            switch (sortOrder)
+            {
+                case "endDate_desc":
+                    model.Auctions = model.Auctions.OrderByDescending(a => a.EndDate).ToList();
+                    break;
+                case "reservationPrice":
+                    model.Auctions = model.Auctions.OrderBy(a => a.ReservationPrice).ToList();
+                    break;
+                case "reservationPrice_desc":
+                    model.Auctions = model.Auctions.OrderByDescending(a => a.ReservationPrice).ToList();
+                    break;
+                default:
+                    model.Auctions = model.Auctions.OrderBy(a => a.EndDate).ToList();
+                    break;
+            }
+            return View(model);
         }
+
+        //public IActionResult Index()
+        //{
+
+        //    return View();
+        //}
 
         public async Task<IActionResult> EditAuction(int? id)
         {
