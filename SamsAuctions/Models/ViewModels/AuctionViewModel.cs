@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SamsAuctions.Models.ViewModels
 {
     public class AuctionViewModel
     {     
         public int AuctionId { get; set; }
+        [Required(ErrorMessage = "Förnamn är obligatoriskt")]
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime StartDate { get; set; }

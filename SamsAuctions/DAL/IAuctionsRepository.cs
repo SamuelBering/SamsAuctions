@@ -1,14 +1,14 @@
-﻿using SamsAuctions.Models.ViewModels;
-using System;
+﻿using SamsAuctions.Models;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SamsAuctions.DAL
 {
     public interface IAuctionsRepository
     {
-        Task AddOrUpdateAuction(AuctionViewModel viewModel);
-        Task<List<AuctionViewModel>> GetAllAuctions(int groupCode);
+        Task AddOrUpdateAuction(Auction viewModel);
+        Task<IList<Auction>> GetAllAuctions(int groupCode);
+        Task RemoveAuction(int auctionId, int groupCode);
+        Task<Auction> GetAuction(int id, int groupCode);
     }
 }

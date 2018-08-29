@@ -9,7 +9,14 @@
 
 
 <p>
-    <a asp-action="EditAuction">Lägg till auktion</a>
+    <a data-ajax="true"
+       asp-action="EditAuctionModal" data-ajax-method="GET"
+       data-ajax-mode="replace"
+       data-ajax-complete="onCompleteLoadingEditModal"
+       data-ajax-update="#modalContainer">
+        Lägg till auktion
+    </a>
+
 </p>
 
 <form asp-action="Index" method="get">
@@ -65,33 +72,55 @@
     <tbody>
         @foreach (var item in Model.Auctions)
         {
-        <tr>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.AuctionId">
-                    @Html.DisplayFor(modelItem => item.Title)
-                </a>
-            </td>
-            <td>
-                @item.Description
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReservationPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedBy)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.AuctionId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.AuctionId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.AuctionId">Delete</a>
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.AuctionId">
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </a>
+                </td>
+                <td>
+                    @item.Description
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReservationPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedBy)
+                </td>
+                <td>
+                    <a data-ajax="true"
+                       asp-route-id="@item.AuctionId"
+                       asp-action="EditAuctionModal" data-ajax-method="GET"
+                       data-ajax-mode="replace"
+                       data-ajax-complete="onCompleteLoadingEditModal"
+                       data-ajax-update="#modalContainer">
+                        Redigera auktion
+                    </a>
+                    @*<a asp-action="Edit" asp-route-id="@item.AuctionId">Edit</a> |*@
+                    <a asp-action="Details" asp-route-id="@item.AuctionId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.AuctionId">Delete</a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
+
+<div id="modalContainer">
+
+</div>
+
+@section Scripts{
+    <script>
+        function onCompleteLoadingEditModal() {
+            $.validator.unobtrusive.parse($("#editAuctionForm"));
+            $('#editAuctionModal').modal('show');
+        }
+    </script>
+}
+

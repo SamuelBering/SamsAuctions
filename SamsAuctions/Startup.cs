@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SamsAuctions.BL;
 using SamsAuctions.DAL;
 using SamsAuctions.Models;
 
@@ -51,6 +52,7 @@ namespace SamsAuctions
             });
 
             services.AddTransient<IAuctionsRepository, AuctionsRepository>();
+            services.AddTransient<IAuctions, Auctions>();
 
             services.AddAutoMapper();
 

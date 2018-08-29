@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SamsAuctions.BL;
 using SamsAuctions.DAL;
+using SamsAuctions.Models;
 using SamsAuctions.Models.ViewModels;
 
 namespace SamsAuctions.Controllers
@@ -12,25 +15,26 @@ namespace SamsAuctions.Controllers
     [Authorize]
     public class AuctionController : Controller
     {
-        private IAuctionsRepository _repository;
 
-        const int groupCode= 7;
+        private IAuctions _auctions;
 
-        public AuctionController(IAuctionsRepository repository)
+        const int groupCode = 7;
+
+        public AuctionController(IAuctions auctions)
         {
-            _repository = repository;
+            _auctions = auctions;
         }
 
-       
-       
         public async Task<IActionResult> Index(string sortOrder, string titleFilter, string descriptionFilter)
         {
 
             var model = new AuctionsIndexViewModel(sortOrder, titleFilter, descriptionFilter);
 
-            model.Auctions = await _repository.GetAllAuctions(groupCode);
+            var auctionViewModelList = Mapper.Map<IList<Auction>, IList<AuctionViewModel>>(await _auctions.GetAllAuctions(groupCode));
 
-          
+            model.Auctions = auctionViewModelList as List<AuctionViewModel>;
+
+
             if (!String.IsNullOrEmpty(titleFilter) || !String.IsNullOrEmpty(descriptionFilter))
             {
                 titleFilter = titleFilter ?? "";
@@ -56,17 +60,47 @@ namespace SamsAuctions.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> Delete(int id)
+        {
+            //try
+            //{
+            await _auctions.RemoveAuction(id, groupCode, User);
+            //}
+            //catch (InvalidOperationException ex)
+            //{
+
+            //}
+
+            var model = new AuctionsIndexViewModel(null, null, null);
+
+            var auctionViewModelList = Mapper.Map<IList<Auction>, IList<AuctionViewModel>>(await _auctions.GetAllAuctions(groupCode));
+
+            model.Auctions = auctionViewModelList as List<AuctionViewModel>;
+
+            return View("Index", model);
+        }
         //public IActionResult Index()
         //{
 
         //    return View();
         //}
 
-        public async Task<IActionResult> EditAuction(int? id)
+        //public async Task<IActionResult> EditAuction(int? id)
+        //{
+
+        //    return View();
+        //}
+
+        public async Task<IActionResult> EditAuctionModal(int? id)
         {
-          
-            return View();
+            var auctionViewModel = new AuctionViewModel();
+
+            if (id != null)
+                auctionViewModel = Mapper.Map<Auction, AuctionViewModel>(await _auctions.GetAuction(id.Value, groupCode));
+
+            return PartialView("EditAuction", auctionViewModel);
         }
+
 
         [HttpPost]
         [AllowAnonymous]
@@ -75,8 +109,9 @@ namespace SamsAuctions.Controllers
         {
             if (ModelState.IsValid)
             {
-                
-                await _repository.AddOrUpdateAuction(model);
+                var auction = Mapper.Map<AuctionViewModel, Auction>(model);
+
+                await _auctions.AddOrUpdateAuction(auction, User);
 
                 return RedirectToAction("Index");
             }

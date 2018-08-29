@@ -21,14 +21,12 @@ namespace SamsAuctions.DAL
     {
         const string baseUrl = "http://nackowskis.azurewebsites.net";
 
-        public async Task AddOrUpdateAuction(AuctionViewModel viewModel)
+        public async Task AddOrUpdateAuction(Auction auction)
         {
-            var auction = Mapper.Map<AuctionViewModel, Auction>(viewModel);
-
             await Post("auktion", auction);
         }
 
-        public async Task<List<AuctionViewModel>> GetAllAuctions(int groupCode)
+        public async Task<IList<Auction>> GetAllAuctions(int groupCode)
         {
 
             DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings
@@ -38,10 +36,13 @@ namespace SamsAuctions.DAL
 
             var auctionList =await Get<List<Auction>>($"auktion/{groupCode}", settings);
 
-            var auctionViewModelList = Mapper.Map<IList<Auction>, IList<AuctionViewModel>>(auctionList);
+            return auctionList;
 
-            return auctionViewModelList as List<AuctionViewModel>;
+        }
 
+        public async Task RemoveAuction(int auctionId, int groupCode )
+        {
+            await Delete($"{groupCode}/{auctionId}");
         }
 
         private void SetupRequest(HttpClient client)
@@ -80,7 +81,29 @@ namespace SamsAuctions.DAL
                 response.EnsureSuccessStatusCode();
             }
         }
-       
 
+        private async Task Delete(string query)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+
+                SetupRequest(client);
+                HttpResponseMessage response =
+                       await client.DeleteAsync($"/api/auktion/{query}");
+                response.EnsureSuccessStatusCode();
+            }
+        }
+
+        public async Task<Auction> GetAuction(int id, int groupCode)
+        {
+            DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings
+            {
+                DateTimeFormat = new System.Runtime.Serialization.DateTimeFormat("yyyy-MM-dd'T'HH:mm:ss")
+            };
+
+            var auction = await Get<Auction>($"auktion/{groupCode}?id={id}", settings);
+
+            return auction;
+        }
     }
 }
