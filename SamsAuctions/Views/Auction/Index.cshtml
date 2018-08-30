@@ -94,17 +94,21 @@
                     @Html.DisplayFor(modelItem => item.CreatedBy)
                 </td>
                 <td>
-                    <a data-ajax="true"
-                       asp-route-id="@item.AuctionId"
-                       asp-action="EditAuctionModal" data-ajax-method="GET"
-                       data-ajax-mode="replace"
-                       data-ajax-complete="onCompleteLoadingEditModal"
-                       data-ajax-update="#modalContainer">
-                        Redigera auktion
-                    </a>
+
                     @*<a asp-action="Edit" asp-route-id="@item.AuctionId">Edit</a> |*@
                     <a asp-action="Details" asp-route-id="@item.AuctionId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.AuctionId">Delete</a>
+                    @if (Model.CurrentUser.UserName == item.CreatedBy)
+                    {
+                        <a data-ajax="true"
+                           asp-route-id="@item.AuctionId"
+                           asp-action="EditAuctionModal" data-ajax-method="GET"
+                           data-ajax-mode="replace"
+                           data-ajax-complete="onCompleteLoadingEditModal"
+                           data-ajax-update="#modalContainer">
+                            Redigera auktion
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.AuctionId">Delete</a>
+                    }
                 </td>
             </tr>
         }

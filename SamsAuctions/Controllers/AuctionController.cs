@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SamsAuctions.BL;
 using SamsAuctions.DAL;
@@ -17,12 +18,14 @@ namespace SamsAuctions.Controllers
     {
 
         private IAuctions _auctions;
+        private UserManager<AppUser> _userManager;
 
         const int groupCode = 7;
 
-        public AuctionController(IAuctions auctions)
+        public AuctionController(IAuctions auctions, UserManager<AppUser> userManager)
         {
             _auctions = auctions;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index(string sortOrder, string titleFilter, string descriptionFilter)
@@ -34,12 +37,13 @@ namespace SamsAuctions.Controllers
 
             model.Auctions = auctionViewModelList as List<AuctionViewModel>;
 
+            model.CurrentUser = await _userManager.GetUserAsync(User);
 
             if (!String.IsNullOrEmpty(titleFilter) || !String.IsNullOrEmpty(descriptionFilter))
             {
                 titleFilter = titleFilter ?? "";
                 descriptionFilter = descriptionFilter ?? "";
-                model.Auctions = model.Auctions.Where(a => a.Title.Contains(titleFilter) && a.Description.Contains(descriptionFilter)).ToList();
+                model.Auctions = model.Auctions.Where(a => a.Title.ToLower().Contains(titleFilter.ToLower()) && a.Description.ToLower().Contains(descriptionFilter.ToLower())).ToList();
             }
 
             switch (sortOrder)
@@ -94,6 +98,8 @@ namespace SamsAuctions.Controllers
         public async Task<IActionResult> EditAuctionModal(int? id)
         {
             var auctionViewModel = new AuctionViewModel();
+            auctionViewModel.GroupCode = groupCode;
+            auctionViewModel.CreatedBy = (await _userManager.GetUserAsync(User)).UserName;
 
             if (id != null)
                 auctionViewModel = Mapper.Map<Auction, AuctionViewModel>(await _auctions.GetAuction(id.Value, groupCode));

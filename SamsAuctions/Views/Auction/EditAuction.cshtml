@@ -14,6 +14,9 @@
             <div class="modal-body">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <form id="editAuctionForm" asp-action="EditAuction" method="post">
+                    <input type="hidden" name="AuctionId" value="@Model.AuctionId" />
+                    <input type="hidden" name="GroupCode" value="@Model.GroupCode" />
+                    <input type="hidden" name="CreatedBy" value="@Model.CreatedBy" />
                     <div class="form-group">
                         <label asp-for="Title"></label>
                         <input asp-for="Title" class="form-control" />
@@ -35,20 +38,15 @@
                         <span asp-validation-for="EndDate"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="GroupCode"></label>
-                        <input asp-for="GroupCode" class="form-control" />
-                        <span asp-validation-for="GroupCode"></span>
-                    </div>
-                    <div class="form-group">
                         <label asp-for="ReservationPrice"></label>
                         <input asp-for="ReservationPrice" class="form-control" />
                         <span asp-validation-for="ReservationPrice"></span>
                     </div>
-                    <div class="form-group">
+                    @*<div class="form-group">
                         <label asp-for="CreatedBy"></label>
                         <input asp-for="CreatedBy" class="form-control" />
                         <span asp-validation-for="CreatedBy"></span>
-                    </div>
+                    </div>*@
                     <button type="submit" class="btn btn-primary">Spara</button>
                     <a asp-action="Index" class="btn btn-secondary">Avbryt</a>
                 </form>

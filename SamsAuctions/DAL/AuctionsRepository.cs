@@ -17,13 +17,16 @@ using SamsAuctions.Infrastructure;
 namespace SamsAuctions.DAL
 {
     [Authorize]
-    public class AuctionsRepository: IAuctionsRepository
+    public class AuctionsRepository : IAuctionsRepository
     {
         const string baseUrl = "http://nackowskis.azurewebsites.net";
 
         public async Task AddOrUpdateAuction(Auction auction)
         {
-            await Post("auktion", auction);
+            if (auction.AuktionID > 0)
+                await Put("auktion", auction);
+            else
+                await Post("auktion", auction);
         }
 
         public async Task<IList<Auction>> GetAllAuctions(int groupCode)
@@ -34,13 +37,13 @@ namespace SamsAuctions.DAL
                 DateTimeFormat = new System.Runtime.Serialization.DateTimeFormat("yyyy-MM-dd'T'HH:mm:ss")
             };
 
-            var auctionList =await Get<List<Auction>>($"auktion/{groupCode}", settings);
+            var auctionList = await Get<List<Auction>>($"auktion/{groupCode}", settings);
 
             return auctionList;
 
         }
 
-        public async Task RemoveAuction(int auctionId, int groupCode )
+        public async Task RemoveAuction(int auctionId, int groupCode)
         {
             await Delete($"{groupCode}/{auctionId}");
         }
@@ -62,8 +65,8 @@ namespace SamsAuctions.DAL
                 HttpResponseMessage response =
                        await client.GetAsync($"/api/{query}");
                 response.EnsureSuccessStatusCode();
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T), settings); 
-                Stream responseStream = await response.Content.ReadAsStreamAsync();              
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T), settings);
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
                 T data = (T)serializer.ReadObject(responseStream);
                 var answer = await response.Content.ReadAsStringAsync();
                 return data;
@@ -77,7 +80,19 @@ namespace SamsAuctions.DAL
 
                 SetupRequest(client);
                 HttpResponseMessage response =
-                       await client.PostAsync($"/api/{query}",new JsonContent(model));
+                       await client.PostAsync($"/api/{query}", new JsonContent(model));
+                response.EnsureSuccessStatusCode();
+            }
+        }
+
+        private async Task Put<T>(string query, T model)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+
+                SetupRequest(client);
+                HttpResponseMessage response =
+                       await client.PutAsync($"/api/{query}", new JsonContent(model));
                 response.EnsureSuccessStatusCode();
             }
         }

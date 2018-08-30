@@ -14,7 +14,7 @@ namespace SamsAuctions.Models.ViewModels
             TitleFilter = titleFilter;
             DescriptionFilter = descriptionFilter;
         }
-
+        public AppUser CurrentUser { get; set; }
         public string EndDateSortParam { get; set; }
         public string ReservationPriceSortParam { get; set; }
         public string TitleFilter { get; set; }
