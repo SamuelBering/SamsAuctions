@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
     <link href="~/Lib/Bootstrap/css/bootstrap.css" rel="stylesheet" />
- 
+    <link href="~/Lib/FontAwesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -18,7 +19,7 @@
                 <li class="active"><a href="#">Home</a></li>
                 <li><a href="javascript: deleteAllRegularUsers()">Delete regular users</a></li>
                 <li><a asp-controller="Auction" asp-action="Index">Auctions</a></li>
-
+                <li><a asp-controller="Admin" asp-action="Index">Hantera användare</a></li>
                 @*<li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Page 1 <span class="caret"></span></a>
             <ul class="dropdown-menu">
@@ -114,6 +115,10 @@
 
 
     <div class="container">
+        <div id="loadingSpinner" class="animationStop">
+            <span class="fa fa-spinner"></span>
+        </div>
+
         @RenderBody()
         <hr />
         <footer>
@@ -126,7 +131,8 @@
     <script src="~/Lib/Bootstrap/js/bootstrap.js"></script>
     <script src="~/Lib/JqueryValidate/jquery.validate.js"></script>
     <script src="~/Lib/JqueryValidationUnobrusive/jquery.validate.unobtrusive.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.4/jquery.unobtrusive-ajax.min.js"></script>
+    @*<script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.4/jquery.unobtrusive-ajax.min.js"></script>*@
+    <script src="~/Lib/jquery.unobtrusive-ajax/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/Site.js"></script>
 
 

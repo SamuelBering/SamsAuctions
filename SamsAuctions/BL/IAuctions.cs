@@ -11,5 +11,6 @@ namespace SamsAuctions.BL
         Task AddOrUpdateAuction(Auction auction, ClaimsPrincipal user);
         Task RemoveAuction(int auctionId, int groupCode, ClaimsPrincipal user);
         Task<Auction> GetAuction(int id, int groupCode);
+        bool isOpen(Auction auction);
     }
 }

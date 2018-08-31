@@ -185,6 +185,13 @@ namespace Users.Controllers
             return View(details);
         }
 
+        [AllowAnonymous]
+        public IActionResult AccessDenied(string returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
+
         [Authorize]
         public async Task<IActionResult> Logout()
         {
@@ -270,14 +277,6 @@ namespace Users.Controllers
                 }
             }
             return View(model);
-        }
-
-        [AllowAnonymous]
-        public IActionResult AccessDenied(string returnUrl)
-        {
-
-            ViewBag.ReturnUrl = returnUrl;
-            return View();
         }
 
 

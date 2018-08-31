@@ -8,3 +8,17 @@
         });
     }
 }
+
+//=====loading spinner
+function startSpinAnimation() {
+    let statusDiv = $("#loadingSpinner");
+    statusDiv.removeClass("animationStop");
+    statusDiv.addClass("animationStart");
+}
+function stopSpinAnimation() {
+    setTimeout(function () {
+        let statusDiv = $("#loadingSpinner");
+        statusDiv.removeClass("animationStart");
+        statusDiv.addClass("animationStop");
+    }, 400);
+}

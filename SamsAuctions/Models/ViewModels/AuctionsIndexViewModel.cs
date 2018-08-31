@@ -13,8 +13,10 @@ namespace SamsAuctions.Models.ViewModels
             ReservationPriceSortParam = sortOrder == "reservationPrice" ? "reservationPrice_desc" : "reservationPrice";
             TitleFilter = titleFilter;
             DescriptionFilter = descriptionFilter;
+            CurrentSortOrder = sortOrder;
         }
         public AppUser CurrentUser { get; set; }
+        public string CurrentSortOrder { get; set; }
         public string EndDateSortParam { get; set; }
         public string ReservationPriceSortParam { get; set; }
         public string TitleFilter { get; set; }

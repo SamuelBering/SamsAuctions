@@ -8,23 +8,26 @@
 <h2>Index</h2>
 
 
-<p>
-    <a data-ajax="true"
-       asp-action="EditAuctionModal" data-ajax-method="GET"
-       data-ajax-mode="replace"
-       data-ajax-complete="onCompleteLoadingEditModal"
-       data-ajax-update="#modalContainer">
-        Lägg till auktion
-    </a>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a data-ajax="true"
+           asp-action="EditAuctionModal" data-ajax-method="GET"
+           data-ajax-mode="replace"
+           data-ajax-complete="onCompleteLoadingEditModal"
+           data-ajax-update="#modalContainer">
+            Lägg till auktion
+        </a>
+    </p>
+}
 
-</p>
 
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">
         <p>
 
 
-
+            <input type="hidden" name="sortOrder" value="@Model.CurrentSortOrder" />
             @*Titel: <input type="text" name="TitelFilter" value="@ViewData["CurrentTitelFilter"]" />*@
             @*Category: <input type="text" name="CategoryFilter" value="@ViewData["CurrentCategoryFilter"]" />*@
             Titel: <input asp-for="TitleFilter" />
@@ -42,9 +45,6 @@
         <tr>
             <th>
                 Title
-                @*<a asp-action="Index" asp-route-sortOrder="@Model.EndDateSortParam">
-
-                    </a>*@
             </th>
             <th>
                 Beskrivning
@@ -57,10 +57,16 @@
                     </a>*@
             </th>
             <th>
-                Slut datum
+                <a asp-action="Index" asp-route-sortOrder="@Model.EndDateSortParam" asp-route-titleFilter="@Model.TitleFilter"
+                   asp-route-descriptionFilter="@Model.DescriptionFilter">
+                    Slut datum
+                </a>
             </th>
             <th>
-                Utropspris
+                <a asp-action="Index" asp-route-sortOrder="@Model.ReservationPriceSortParam" asp-route-titleFilter="@Model.TitleFilter"
+                   asp-route-descriptionFilter="@Model.DescriptionFilter">
+                    Utropspris
+                </a>
             </th>
             <th>
                 Skapad av

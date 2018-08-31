@@ -49,6 +49,14 @@ namespace SamsAuctions.BL
             return await _repository.GetAuction(id, groupCode);
         }
 
+        public bool isOpen(Auction auction)
+        {
+            if (auction.SlutDatum > DateTime.UtcNow.AddHours(2))
+                return true;
+            else
+                return false;
+        }
+
         public async Task RemoveAuction(int auctionId, int groupCode, ClaimsPrincipal user)
         {
             if (user?.IsInRole("Admin") ?? false)
