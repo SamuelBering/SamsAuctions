@@ -25,5 +25,9 @@ namespace SamsAuctions.Models
         public int Utropspris { get; set; }
         [DataMember]
         public string SkapadAv { get; set; }
+
+        public bool AnvandarenFarUppdatera { get; set; }
+
+        public bool ArOppen { get; set; }
     }
 }

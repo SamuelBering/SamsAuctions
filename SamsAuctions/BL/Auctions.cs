@@ -39,9 +39,27 @@ namespace SamsAuctions.BL
                 throw new InvalidOperationException("User must be in role: Admin");
         }
 
-        public async Task<IList<Auction>> GetAllAuctions(int groupCode)
+        public async Task<IList<Auction>> GetAllAuctions(int groupCode, ClaimsPrincipal userClaimsPrincipal)
         {
-            return await _repository.GetAllAuctions(groupCode);
+            var auctions= await _repository.GetAllAuctions(groupCode);
+
+            var user = await _userManager.GetUserAsync(userClaimsPrincipal);
+
+            foreach (var auction in auctions)
+            {
+                if (auction.SkapadAv == user.UserName)
+                    auction.AnvandarenFarUppdatera = true;
+                else
+                    auction.AnvandarenFarUppdatera = false;
+
+                if (isOpen(auction))
+                    auction.ArOppen = true;
+                else
+                    auction.ArOppen = false;
+
+            }
+
+            return auctions;
         }
 
         public async Task<Auction> GetAuction(int id, int groupCode)

@@ -102,8 +102,24 @@
                 <td>
 
                     @*<a asp-action="Edit" asp-route-id="@item.AuctionId">Edit</a> |*@
-                    <a asp-action="Details" asp-route-id="@item.AuctionId">Details</a> |
-                    @if (Model.CurrentUser.UserName == item.CreatedBy)
+                    @if (item.IsOpen)
+                    {
+                        <a asp-controller="bids" asp-action="GetOpenAuctionDetails" asp-route-auctionId="@item.AuctionId">Visa detaljer / lägg bud</a>
+                    }
+                    else
+                    {
+                        <a data-ajax="true"
+                           asp-controller="bids"
+                           asp-action="GetClosedAuctionDetails" data-ajax-method="GET"
+                           asp-route-auctionId="@item.AuctionId"
+                           data-ajax-mode="replace"
+                           data-ajax-complete="onCompleteLoadingClosedAuctionDetailsModal"
+                           data-ajax-update="#modalContainer">
+                            Visa detaljer
+                        </a>
+                    }
+
+                    @if (item.UserAllowedToUpdate)
                     {
                         <a data-ajax="true"
                            asp-route-id="@item.AuctionId"
@@ -113,7 +129,7 @@
                            data-ajax-update="#modalContainer">
                             Redigera auktion
                         </a>
-                        <a asp-action="Delete" asp-route-id="@item.AuctionId">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.AuctionId">Ta bort</a>
                     }
                 </td>
             </tr>
@@ -130,6 +146,10 @@
         function onCompleteLoadingEditModal() {
             $.validator.unobtrusive.parse($("#editAuctionForm"));
             $('#editAuctionModal').modal('show');
+        }
+
+        function onCompleteLoadingClosedAuctionDetailsModal() {           
+            $('#closedAuctionDetailsModal').modal('show');
         }
     </script>
 }

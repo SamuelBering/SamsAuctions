@@ -27,5 +27,7 @@ namespace SamsAuctions.Models.ViewModels
         [Display(Name = "Skapad av")]
         [Required(ErrorMessage = "Skapad av är obligatoriskt")]
         public string CreatedBy { get; set; }
+        public bool UserAllowedToUpdate { get; set; }
+        public bool IsOpen { get; set; }
     }
 }

@@ -23,27 +23,28 @@ namespace SamsAuctions.Controllers
         }
         private Task<OpenAuctionViewModel> CreateOpenAuctionViemModel(Auction auction)
         {
-
+            throw new NotImplementedException();
         }
 
-        private Task<ClosedAuctionViewModel> CreateClosedAuctionViemModel(Auction auction)
+        private async Task<ClosedAuctionViewModel> CreateClosedAuctionViemModel(Auction auction)
         {
+            return new ClosedAuctionViewModel();
 
+            
         }
 
-        public async Task<IActionResult> GetAuctionDetails(int auctionId)
+        public async Task<IActionResult> GetClosedAuctionDetails(int auctionId)
         {
             var auction = await _auctions.GetAuction(auctionId, groupCode);
-            if (_auctions.isOpen(auction))
-            {
-                var model = await CreateOpenAuctionViemModel(auction);
-                return PartialView("OpenAuctionDetails", model);
-            }
-            else
-            {
-                var model = await CreateClosedAuctionViemModel(auction);
-                return PartialView("ClosedAuctionDetails", model);
-            }
+            var model = await CreateClosedAuctionViemModel(auction);
+            return PartialView("ClosedAuctionDetails", model);
+        }
+
+        public async Task<IActionResult> GetOpenAuctionDetails(int auctionId)
+        {
+            var auction = await _auctions.GetAuction(auctionId, groupCode);
+            var model = await CreateOpenAuctionViemModel(auction);
+            return View("OpenAuctionDetails", model);  
         }
 
 

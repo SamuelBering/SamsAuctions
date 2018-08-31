@@ -7,7 +7,7 @@ namespace SamsAuctions.BL
 {
     public interface IAuctions
     {
-        Task<IList<Auction>> GetAllAuctions(int groupCode);
+        Task<IList<Auction>> GetAllAuctions(int groupCode, ClaimsPrincipal user);
         Task AddOrUpdateAuction(Auction auction, ClaimsPrincipal user);
         Task RemoveAuction(int auctionId, int groupCode, ClaimsPrincipal user);
         Task<Auction> GetAuction(int id, int groupCode);

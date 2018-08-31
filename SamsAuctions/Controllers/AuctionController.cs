@@ -33,7 +33,7 @@ namespace SamsAuctions.Controllers
 
             var model = new AuctionsIndexViewModel(sortOrder, titleFilter, descriptionFilter);
 
-            var auctionViewModelList = Mapper.Map<IList<Auction>, IList<AuctionViewModel>>(await _auctions.GetAllAuctions(groupCode));
+            var auctionViewModelList = Mapper.Map<IList<Auction>, IList<AuctionViewModel>>(await _auctions.GetAllAuctions(groupCode, User));
 
             model.Auctions = auctionViewModelList as List<AuctionViewModel>;
 
@@ -75,25 +75,16 @@ namespace SamsAuctions.Controllers
 
             //}
 
-            var model = new AuctionsIndexViewModel(null, null, null);
+            //var model = new AuctionsIndexViewModel(null, null, null);
 
-            var auctionViewModelList = Mapper.Map<IList<Auction>, IList<AuctionViewModel>>(await _auctions.GetAllAuctions(groupCode));
+            //var auctionViewModelList = Mapper.Map<IList<Auction>, IList<AuctionViewModel>>(await _auctions.GetAllAuctions(groupCode));
 
-            model.Auctions = auctionViewModelList as List<AuctionViewModel>;
+            //model.Auctions = auctionViewModelList as List<AuctionViewModel>;
 
-            return View("Index", model);
+            //return View("Index", model);
+            return RedirectToAction("Index");
         }
-        //public IActionResult Index()
-        //{
-
-        //    return View();
-        //}
-
-        //public async Task<IActionResult> EditAuction(int? id)
-        //{
-
-        //    return View();
-        //}
+       
 
         public async Task<IActionResult> EditAuctionModal(int? id)
         {
