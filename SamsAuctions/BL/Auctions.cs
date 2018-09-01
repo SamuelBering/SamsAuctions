@@ -67,6 +67,18 @@ namespace SamsAuctions.BL
             return await _repository.GetAuction(id, groupCode);
         }
 
+        public async Task<Bid> GetWinningBid(Auction auction)
+        {
+            if (isOpen(auction))
+                throw new InvalidOperationException("This auction is still open");
+
+            var bids = await _repository.GetAllBids(auction.Gruppkod, auction.AuktionID);
+
+            var highestBid = bids.OrderByDescending(b => b.Summa).First();
+
+            return highestBid;
+        }
+
         public bool isOpen(Auction auction)
         {
             if (auction.SlutDatum > DateTime.UtcNow.AddHours(2))

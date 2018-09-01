@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SamsAuctions.BL;
 using SamsAuctions.DAL;
+using SamsAuctions.Infrastructure;
 using SamsAuctions.Models;
 using SamsAuctions.Services;
 
@@ -31,6 +32,10 @@ namespace SamsAuctions
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            int groupCode = Convert.ToInt32(Configuration["AppConfiguration:GroupCode"]);
+
+            services.AddSingleton(new AppConfiguration { GroupCode = groupCode });
+
             var connNackowskisIdentity = Configuration["ConnectionStrings:NackowskisIdentity"];
 
             services.AddDbContext<AppIdentityDbContext>(options =>

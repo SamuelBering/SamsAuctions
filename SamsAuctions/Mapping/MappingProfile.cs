@@ -30,5 +30,12 @@ public class MappingProfile : Profile
           .ForMember(a => a.UserAllowedToUpdate, b => b.MapFrom(c => c.AnvandarenFarUppdatera))
           .ForMember(a => a.IsOpen, b => b.MapFrom(c => c.ArOppen));
 
+        CreateMap<Auction, ClosedAuctionViewModel>()
+          .ForMember(a => a.Title, b => b.MapFrom(c => c.Titel))
+          .ForMember(a => a.ReservationPrice, b => b.MapFrom(c => c.Utropspris))
+          .ForMember(a => a.EndDate, b => b.MapFrom(c => c.SlutDatum))
+          .ForMember(a => a.Description, b => b.MapFrom(c => c.Beskrivning))
+          .ForMember(a => a.CreatedBy, b => b.MapFrom(c => c.SkapadAv));
+
     }
 }

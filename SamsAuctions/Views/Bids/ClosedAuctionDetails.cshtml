@@ -8,13 +8,25 @@
             <div class="modal-header">
                 @*<a asp-action="#" class="close">&times;</a>*@
                
-                <h4 class="modal-title">Avslutat auktion</h4>
+                <h4 class="modal-title">Avslutat auktion: @Model.Title</h4>
             </div>
             <div class="modal-body">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                Todo: Här skall det var info om lägsta och högsta bud
-
-
+                <p>
+                    <strong>@Html.DisplayNameFor(model => model.Description): </strong>
+                    @Model.Description
+                </p>
+                <p>
+                    <strong>@Html.DisplayNameFor(model => model.ReservationPrice): </strong>
+                    @Model.ReservationPrice
+                </p>
+                <p>
+                    <strong>@Html.DisplayNameFor(model => model.highestBid): </strong>
+                    @Model.highestBid
+                </p>
+                <p>
+                    <strong>@Html.DisplayNameFor(model => model.EndDate): </strong>
+                    @Model.EndDate
+                </p>
             </div>
             <div class="modal-footer">
             </div>

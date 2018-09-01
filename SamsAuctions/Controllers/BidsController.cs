@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SamsAuctions.BL;
+using SamsAuctions.Infrastructure;
 using SamsAuctions.Models;
 using SamsAuctions.Models.ViewModels;
 using System;
@@ -14,12 +16,14 @@ namespace SamsAuctions.Controllers
     public class BidsController : Controller
     {
         private IAuctions _auctions;
+        private AppConfiguration _appConfiguration;
+        private int groupCode;
 
-        const int groupCode = 7;
-
-        public BidsController(IAuctions auctions)
+        public BidsController(IAuctions auctions, AppConfiguration appConfiguration)
         {
             _auctions = auctions;
+            _appConfiguration = appConfiguration;
+            groupCode = appConfiguration.GroupCode;
         }
         private Task<OpenAuctionViewModel> CreateOpenAuctionViemModel(Auction auction)
         {
@@ -28,9 +32,9 @@ namespace SamsAuctions.Controllers
 
         private async Task<ClosedAuctionViewModel> CreateClosedAuctionViemModel(Auction auction)
         {
-            return new ClosedAuctionViewModel();
-
-            
+            var closedAuctionViewModel = Mapper.Map<Auction, ClosedAuctionViewModel>(auction);
+            closedAuctionViewModel.highestBid = (await _auctions.GetWinningBid(auction)).Summa;
+            return closedAuctionViewModel;
         }
 
         public async Task<IActionResult> GetClosedAuctionDetails(int auctionId)

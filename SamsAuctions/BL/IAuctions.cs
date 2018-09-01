@@ -12,5 +12,6 @@ namespace SamsAuctions.BL
         Task RemoveAuction(int auctionId, int groupCode, ClaimsPrincipal user);
         Task<Auction> GetAuction(int id, int groupCode);
         bool isOpen(Auction auction);
+        Task<Bid> GetWinningBid(Auction auction);
     }
 }

@@ -43,6 +43,15 @@ namespace SamsAuctions.DAL
 
         }
 
+        public async Task<IList<Bid>> GetAllBids(int groupCode, int auctionId)
+        {
+
+            var bidsList = await Get<List<Bid>>($"bud/{groupCode}/{auctionId}");
+
+            return bidsList;
+
+        }
+
         public async Task RemoveAuction(int auctionId, int groupCode)
         {
             await Delete($"{groupCode}/{auctionId}");
@@ -56,7 +65,7 @@ namespace SamsAuctions.DAL
             MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        private async Task<T> Get<T>(string query, DataContractJsonSerializerSettings settings)
+        private async Task<T> Get<T>(string query, DataContractJsonSerializerSettings settings = null)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -65,7 +74,13 @@ namespace SamsAuctions.DAL
                 HttpResponseMessage response =
                        await client.GetAsync($"/api/{query}");
                 response.EnsureSuccessStatusCode();
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T), settings);
+                DataContractJsonSerializer serializer;
+
+                if (settings != null)
+                    serializer = new DataContractJsonSerializer(typeof(T), settings);
+                else
+                    serializer = new DataContractJsonSerializer(typeof(T));
+
                 Stream responseStream = await response.Content.ReadAsStreamAsync();
                 T data = (T)serializer.ReadObject(responseStream);
                 var answer = await response.Content.ReadAsStringAsync();

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SamsAuctions.BL;
 using SamsAuctions.DAL;
+using SamsAuctions.Infrastructure;
 using SamsAuctions.Models;
 using SamsAuctions.Models.ViewModels;
 
@@ -19,13 +20,16 @@ namespace SamsAuctions.Controllers
 
         private IAuctions _auctions;
         private UserManager<AppUser> _userManager;
+        private AppConfiguration _appConfiguration;
 
-        const int groupCode = 7;
+        private int groupCode;
 
-        public AuctionController(IAuctions auctions, UserManager<AppUser> userManager)
+        public AuctionController(IAuctions auctions, UserManager<AppUser> userManager, AppConfiguration appConfiguration)
         {
             _auctions = auctions;
             _userManager = userManager;
+            _appConfiguration = appConfiguration;
+            groupCode = appConfiguration.GroupCode;
         }
 
         public async Task<IActionResult> Index(string sortOrder, string titleFilter, string descriptionFilter)
