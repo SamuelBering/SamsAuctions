@@ -21,6 +21,10 @@
     {
       "library": "font-awesome@4.7.0",
       "destination": "wwwroot/Lib/FontAwesome"
+    },
+    {
+      "library": "Chart.js@2.7.2",
+      "destination": "wwwroot/Lib/Chartjs"
     }
     
   ]

@@ -68,6 +68,8 @@ namespace SamsAuctions.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
             //try
@@ -104,7 +106,6 @@ namespace SamsAuctions.Controllers
 
 
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAuction(AuctionViewModel model)
         {

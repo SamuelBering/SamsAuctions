@@ -13,30 +13,38 @@
     <strong>@Html.DisplayNameFor(m => m.EndDate)</strong>: @Model.EndDate.ToShortDateString()<br>
 </p>
 
-@if (Model.Bids.Count > 0)
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Belopp</th>
-                <th>Budgivare</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Bids)
-            {
-                <tr>
+<p>
+    <a class="btn btn-primary btn-sm" data-ajax="true"
+       asp-action="BidModal" data-ajax-method="GET"
+       asp-route-auctionId="@Model.AuctionId"
+       data-ajax-mode="replace"
+       data-ajax-begin="startSpinAnimation"
+       data-ajax-complete="onCompleteLoadingBidModal"
+       data-ajax-failure="onAjaxFailure"
+       data-ajax-update="#modalContainer">
+        Lägg bud
+    </a>
+</p>
 
-                    <td>@item.Amount.ToString("C")</td>
-                    <td>@item.Bidder</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+
+<div id="bidsContainer">
+    <partial name="Bids" for="Bids" />
+</div>
+
+<div id="modalContainer"></div>
+
+@section Scripts{
+    <script>
+        function onCompleteLoadingBidModal() {
+            stopSpinAnimation();
+            $.validator.unobtrusive.parse($("#bidForm"));
+            $('#bidModal').modal('show');
+        }
+
+        function onCompletePostBid() {
+            stopSpinAnimation();
+            $('#bidModal').modal('hide');
+        }
+    </script>
 }
-else
-{
-    <p>
-        Inga bud lagda
-    </p>
-}
+

@@ -28,6 +28,8 @@ namespace SamsAuctions.Models
 
         public bool AnvandarenFarUppdatera { get; set; }
 
+        public bool AnvandarenFarTaBort { get; set; }
+
         public bool ArOppen { get; set; }
     }
 }

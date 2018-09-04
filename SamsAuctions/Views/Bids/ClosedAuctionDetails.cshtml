@@ -20,8 +20,18 @@
                     @Model.ReservationPrice
                 </p>
                 <p>
-                    <strong>@Html.DisplayNameFor(model => model.highestBid): </strong>
-                    @Model.highestBid
+                    @if (Model.highestBid > 0)
+                    {
+                        <strong>@Html.DisplayNameFor(model => model.highestBid): </strong>
+                        @Model.highestBid
+                    }
+                    else
+                    {
+                        <p>
+                            Inga bud lagda.
+                        </p>
+                    }
+
                 </p>
                 <p>
                     <strong>@Html.DisplayNameFor(model => model.EndDate): </strong>

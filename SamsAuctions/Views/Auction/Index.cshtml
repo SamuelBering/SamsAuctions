@@ -129,7 +129,14 @@
                            data-ajax-update="#modalContainer">
                             Redigera auktion
                         </a>
-                        <a asp-action="Delete" asp-route-id="@item.AuctionId">Ta bort</a>
+                    }
+
+                    @if (item.UserAllowedToRemove)
+                    {
+                        <form method="post" asp-action="Delete">
+                            <input type="hidden" name="id" value="@item.AuctionId">
+                            <button type="submit" class="btn btn-danger btn-sm">Ta bort</button>
+                        </form>
                     }
                 </td>
             </tr>

@@ -1,0 +1,30 @@
+﻿@model IList<BidViewModel>
+
+@if (Model.Count > 0)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Belopp</th>
+                <th>Budgivare</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td>@item.Amount.ToString("C")</td>
+                    <td>@item.Bidder</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>
+        Inga bud lagda
+    </p>
+}
+

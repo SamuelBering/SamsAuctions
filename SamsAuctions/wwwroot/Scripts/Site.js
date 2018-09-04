@@ -22,3 +22,8 @@ function stopSpinAnimation() {
         statusDiv.addClass("animationStop");
     }, 400);
 }
+
+function onAjaxFailure(a, b, c) {
+    alert("Ett oväntat fel inträffade. (se konsolen för mer info)");
+    console.log(a);
+}

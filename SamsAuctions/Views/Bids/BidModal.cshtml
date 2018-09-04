@@ -1,0 +1,41 @@
+﻿@model BidViewModel
+<!-- Modal -->
+<div id="bidModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="javascript: $('#bidModal').modal('hide');" class="close">&times;</a>
+                <h4 class="modal-title">Lägg ett bud</h4>
+            </div>
+            <div class="modal-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <form id="bidForm"
+                      data-ajax="true"
+                      data-ajax-method="POST"
+                      data-ajax-mode="replace"
+                      data-ajax-begin="startSpinAnimation"
+                      data-ajax-update="#bidsContainer"
+                      data-ajax-failure="onAjaxFailure"
+                      data-ajax-complete="onCompletePostBid"
+                      asp-action="Bid">
+                    <input type="hidden" name="AuctionId" value="@Model.AuctionId" />
+                    <input type="hidden" name="Bidder" value="@Model.Bidder" />
+                    <div class="form-group">
+                        <label asp-for="Amount"></label>
+                        <input asp-for="Amount" class="form-control" />
+                        <span asp-validation-for="Amount"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Spara</button>
+                    <a href="javascript: $('#bidModal').modal('hide');" class="btn btn-secondary">Avbryt</a>
+                </form>
+
+
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+
+    </div>
+</div>

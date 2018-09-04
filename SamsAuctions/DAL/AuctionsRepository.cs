@@ -135,5 +135,10 @@ namespace SamsAuctions.DAL
 
             return auction;
         }
+
+        public async Task AddBid(Bid bid)
+        {
+            await Post("bud", bid);
+        }
     }
 }

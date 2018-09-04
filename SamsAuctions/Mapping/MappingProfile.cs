@@ -16,6 +16,7 @@ public class MappingProfile : Profile
             .ForMember(a => a.Titel, b => b.MapFrom(c => c.Title))
            .ForMember(a => a.Utropspris, b => b.MapFrom(c => c.ReservationPrice))
            .ForMember(a => a.AnvandarenFarUppdatera, b => b.MapFrom(c => c.UserAllowedToUpdate))
+            .ForMember(a => a.AnvandarenFarTaBort, b => b.MapFrom(c => c.UserAllowedToRemove))
            .ForMember(a => a.ArOppen, b => b.MapFrom(c => c.IsOpen));
 
         CreateMap<Auction, AuctionViewModel>()
@@ -28,6 +29,7 @@ public class MappingProfile : Profile
            .ForMember(a => a.Title, b => b.MapFrom(c => c.Titel))
           .ForMember(a => a.ReservationPrice, b => b.MapFrom(c => c.Utropspris))
           .ForMember(a => a.UserAllowedToUpdate, b => b.MapFrom(c => c.AnvandarenFarUppdatera))
+           .ForMember(a => a.UserAllowedToRemove, b => b.MapFrom(c => c.AnvandarenFarTaBort))
           .ForMember(a => a.IsOpen, b => b.MapFrom(c => c.ArOppen));
 
         CreateMap<Auction, ClosedAuctionViewModel>()
@@ -38,6 +40,7 @@ public class MappingProfile : Profile
           .ForMember(a => a.CreatedBy, b => b.MapFrom(c => c.SkapadAv));
 
         CreateMap<Auction, OpenAuctionViewModel>()
+          .ForMember(a => a.AuctionId, b => b.MapFrom(c => c.AuktionID))
           .ForMember(a => a.Title, b => b.MapFrom(c => c.Titel))
           .ForMember(a => a.ReservationPrice, b => b.MapFrom(c => c.Utropspris))
           .ForMember(a => a.EndDate, b => b.MapFrom(c => c.SlutDatum))
@@ -48,6 +51,12 @@ public class MappingProfile : Profile
              .ForMember(a => a.Bidder, b => b.MapFrom(c => c.Budgivare))
              .ForMember(a => a.BidId, b => b.MapFrom(c => c.BudID))
              .ForMember(a => a.Amount, b => b.MapFrom(c => c.Summa));
+
+        CreateMap<BidViewModel, Bid>()
+            .ForMember(a => a.AuktionID, b => b.MapFrom(c => c.AuctionId))
+            .ForMember(a => a.Budgivare, b => b.MapFrom(c => c.Bidder))
+            .ForMember(a => a.BudID, b => b.MapFrom(c => c.BidId))
+            .ForMember(a => a.Summa, b => b.MapFrom(c => c.Amount));
 
     }
 }

@@ -8,6 +8,7 @@ namespace SamsAuctions.Models.ViewModels
 {
     public class OpenAuctionViewModel
     {
+        public int AuctionId { get; set; }
         [Display(Name = "Titel")]
         public string Title { get; set; }
         [Display(Name = "Beskrivning")]

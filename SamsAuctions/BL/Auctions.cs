@@ -38,17 +38,51 @@ namespace SamsAuctions.BL
             else
                 throw new InvalidOperationException("User must be in role: Admin");
         }
+        public async Task<IList<Auction>> GetClosedAuctions(int groupCode, ClaimsPrincipal userClaimsPrincipal, bool ownAuctions = false)
+        {
+            return await GetClosedAuctions(groupCode, new DateTime(1000, 1, 1), new DateTime(4000, 1, 1), userClaimsPrincipal, ownAuctions);
+        }
+
+        public async Task<IList<Auction>> GetClosedAuctions(int groupCode, DateTime startDate, DateTime endDate, ClaimsPrincipal userClaimsPrincipal, bool ownAuctions = false)
+        {
+            var user = await _userManager.GetUserAsync(userClaimsPrincipal);
+            var auctions = (await _repository.GetAllAuctions(groupCode))
+                .Where((a) =>
+                {
+                    var result = false;
+
+                    if (!isOpen(a) && a.StartDatum >= startDate && a.SlutDatum <= endDate)
+                        result = true;
+
+                    if (ownAuctions)
+                    {
+                        if (a.SkapadAv != user.UserName)
+                            result = false;
+                    }
+
+                    return result;
+                });
+
+            return auctions.ToList();
+        }
 
         public async Task<IList<Auction>> GetAllAuctions(int groupCode, ClaimsPrincipal userClaimsPrincipal)
         {
-            var auctions= await _repository.GetAllAuctions(groupCode);
+            var auctions = await _repository.GetAllAuctions(groupCode);
 
             var user = await _userManager.GetUserAsync(userClaimsPrincipal);
 
             foreach (var auction in auctions)
             {
+                auction.AnvandarenFarTaBort = false;
+
                 if (auction.SkapadAv == user.UserName)
+                {
                     auction.AnvandarenFarUppdatera = true;
+                    var allBids = await _repository.GetAllBids(groupCode, auction.AuktionID);
+                    if (allBids.Count == 0)
+                        auction.AnvandarenFarTaBort = true;
+                }
                 else
                     auction.AnvandarenFarUppdatera = false;
 
@@ -64,7 +98,7 @@ namespace SamsAuctions.BL
 
         public async Task<IList<Bid>> GetAllBids(int auctionId, int groupCode)
         {
-            return await _repository.GetAllBids(groupCode, auctionId); 
+            return await _repository.GetAllBids(groupCode, auctionId);
         }
 
         public async Task<Auction> GetAuction(int id, int groupCode)
@@ -72,16 +106,33 @@ namespace SamsAuctions.BL
             return await _repository.GetAuction(id, groupCode);
         }
 
+        public async Task AddBid(Bid bid, int groupCode)
+        {
+            var auction = await _repository.GetAuction(bid.AuktionID, groupCode);
+            var highestBid = await GetHighestBid(auction);
+            if (bid.Summa <= (highestBid?.Summa ?? 0))
+                throw new InvalidOperationException("Bid must be the highest bid");
+            else
+                await _repository.AddBid(bid);
+        }
+
+        public async Task<Bid> GetHighestBid(Auction auction)
+        {
+            var bids = await _repository.GetAllBids(auction.Gruppkod, auction.AuktionID);
+
+            if (bids.Count == 0)
+                return null;
+
+            var highestBid = bids.OrderByDescending(b => b.Summa).First();
+            return highestBid;
+        }
+
         public async Task<Bid> GetWinningBid(Auction auction)
         {
             if (isOpen(auction))
                 throw new InvalidOperationException("This auction is still open");
 
-            var bids = await _repository.GetAllBids(auction.Gruppkod, auction.AuktionID);
-
-            var highestBid = bids.OrderByDescending(b => b.Summa).First();
-
-            return highestBid;
+            return await GetHighestBid(auction);
         }
 
         public bool isOpen(Auction auction)
@@ -101,7 +152,13 @@ namespace SamsAuctions.BL
                 var auction = await GetAuction(auctionId, groupCode);
 
                 if (currentUserName == auction.SkapadAv)
-                    await _repository.RemoveAuction(auctionId, groupCode);
+                {
+                    var allBids = await _repository.GetAllBids(groupCode, auctionId);
+                    if (allBids.Count == 0)
+                        await _repository.RemoveAuction(auctionId, groupCode);
+                    else
+                        throw new InvalidOperationException("Can´t remove an auction that contains bids");
+                }
                 else
                     throw new InvalidOperationException("User must have created this auction");
             }
