@@ -13,5 +13,6 @@ namespace SamsAuctions.BL
         Task<Auction> GetAuction(int id, int groupCode);
         bool isOpen(Auction auction);
         Task<Bid> GetWinningBid(Auction auction);
+        Task<IList<Bid>> GetAllBids(int auctionId, int groupCode);
     }
 }

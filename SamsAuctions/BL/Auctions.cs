@@ -62,6 +62,11 @@ namespace SamsAuctions.BL
             return auctions;
         }
 
+        public async Task<IList<Bid>> GetAllBids(int auctionId, int groupCode)
+        {
+            return await _repository.GetAllBids(groupCode, auctionId); 
+        }
+
         public async Task<Auction> GetAuction(int id, int groupCode)
         {
             return await _repository.GetAuction(id, groupCode);

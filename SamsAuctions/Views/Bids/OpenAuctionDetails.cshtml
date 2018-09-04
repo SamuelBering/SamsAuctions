@@ -1,0 +1,42 @@
+﻿@model OpenAuctionViewModel
+
+@{
+    ViewData["Title"] = "Öppen auktion";
+}
+
+<h2>Öppen auktion</h2>
+
+<p>
+    <strong>@Html.DisplayNameFor(m => m.Title)</strong>: @Model.Title <br>
+    <strong>@Html.DisplayNameFor(m => m.Description)</strong>: @Model.Description <br>
+    <strong>@Html.DisplayNameFor(m => m.ReservationPrice)</strong>: @Model.ReservationPrice <br>
+    <strong>@Html.DisplayNameFor(m => m.EndDate)</strong>: @Model.EndDate.ToShortDateString()<br>
+</p>
+
+@if (Model.Bids.Count > 0)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Belopp</th>
+                <th>Budgivare</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Bids)
+            {
+                <tr>
+
+                    <td>@item.Amount.ToString("C")</td>
+                    <td>@item.Bidder</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>
+        Inga bud lagda
+    </p>
+}

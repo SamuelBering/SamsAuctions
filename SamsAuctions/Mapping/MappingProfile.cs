@@ -37,5 +37,17 @@ public class MappingProfile : Profile
           .ForMember(a => a.Description, b => b.MapFrom(c => c.Beskrivning))
           .ForMember(a => a.CreatedBy, b => b.MapFrom(c => c.SkapadAv));
 
+        CreateMap<Auction, OpenAuctionViewModel>()
+          .ForMember(a => a.Title, b => b.MapFrom(c => c.Titel))
+          .ForMember(a => a.ReservationPrice, b => b.MapFrom(c => c.Utropspris))
+          .ForMember(a => a.EndDate, b => b.MapFrom(c => c.SlutDatum))
+          .ForMember(a => a.Description, b => b.MapFrom(c => c.Beskrivning));
+
+        CreateMap<Bid, BidViewModel>()
+             .ForMember(a => a.AuctionId, b => b.MapFrom(c => c.AuktionID))
+             .ForMember(a => a.Bidder, b => b.MapFrom(c => c.Budgivare))
+             .ForMember(a => a.BidId, b => b.MapFrom(c => c.BudID))
+             .ForMember(a => a.Amount, b => b.MapFrom(c => c.Summa));
+
     }
 }

@@ -25,9 +25,12 @@ namespace SamsAuctions.Controllers
             _appConfiguration = appConfiguration;
             groupCode = appConfiguration.GroupCode;
         }
-        private Task<OpenAuctionViewModel> CreateOpenAuctionViemModel(Auction auction)
+        private async Task<OpenAuctionViewModel> CreateOpenAuctionViemModel(Auction auction)
         {
-            throw new NotImplementedException();
+            var openAuctionViewModel = Mapper.Map<Auction, OpenAuctionViewModel>(auction);
+            openAuctionViewModel.Bids = Mapper.Map<IList<Bid>, IList<BidViewModel>>(await _auctions.GetAllBids(auction.AuktionID, groupCode));
+
+            return openAuctionViewModel;
         }
 
         private async Task<ClosedAuctionViewModel> CreateClosedAuctionViemModel(Auction auction)
