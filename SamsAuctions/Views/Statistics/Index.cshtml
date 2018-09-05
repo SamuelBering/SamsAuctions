@@ -1,7 +1,52 @@
-﻿
+﻿@model GetStatisticsViewModel
+
 @{
     ViewData["Title"] = "Statistik";
 }
 
 <h2>Auktionsstatistik</h2>
+
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<form id="statisticsForm"
+      data-ajax="true"
+      data-ajax-method="GET"
+      data-ajax-begin="startSpinAnimation"
+      data-ajax-failure="onAjaxFailure"
+      data-ajax-success="showStatistics"
+      data-ajax-complete="stopSpinAnimation"
+      asp-action="GetAuctionsStatistics">
+    @*<input type="hidden" name="AuctionId" value="@Model.AuctionId" />
+        <input type="hidden" name="Bidder" value="@Model.Bidder" />*@
+    <div class="form-group">
+        <label asp-for="StartDate"></label>
+        <input asp-for="StartDate" class="form-control" />
+        <span asp-validation-for="StartDate"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="EndDate"></label>
+        <input asp-for="EndDate" class="form-control" />
+        <span asp-validation-for="EndDate"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="SelectedAuctionType"></label>
+
+        @foreach (var item in Model.AuctionTypes)
+        {
+            <input asp-for="SelectedAuctionType" type="radio" value="@item.Id" /> @item.Type
+        }
+
+    </div>
+    <button type="submit" class="btn btn-primary">Hämta statistik</button>
+</form>
+
+
+<canvas id="auctionsChart" width="1600" height="900"></canvas>
+
+
+@section Scripts{
+    <script src="~/Scripts/Statistics/Index.js"></script>
+}
+
 
