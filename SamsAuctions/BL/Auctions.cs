@@ -51,7 +51,7 @@ namespace SamsAuctions.BL
                 {
                     var result = false;
 
-                    if (!isOpen(a) && a.StartDatum >= startDate && a.SlutDatum <= endDate)
+                    if (!isOpen(a) && a.SlutDatum >= startDate && a.SlutDatum <= endDate)
                         result = true;
 
                     if (ownAuctions)

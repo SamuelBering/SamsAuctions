@@ -7,7 +7,8 @@
 <h2>Auktionsstatistik</h2>
 
 
-<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div asp-validation-summary="All" class="text-danger"></div>
+
 <form id="statisticsForm"
       data-ajax="true"
       data-ajax-method="GET"
@@ -38,6 +39,7 @@
         }
 
     </div>
+    <div id="customValidation"></div>
     <button type="submit" class="btn btn-primary">Hämta statistik</button>
 </form>
 

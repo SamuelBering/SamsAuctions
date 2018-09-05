@@ -66,9 +66,11 @@ namespace SamsAuctions.Controllers
             return viewModel;
         }
 
+
         public async Task<IActionResult> GetAuctionsStatistics(GetStatisticsViewModel getStatisticsViewModel)
         {
-            var auctions = await _auctions.GetClosedAuctions(groupCode, User);
+            var auctions = await _auctions.GetClosedAuctions(groupCode, getStatisticsViewModel.StartDate.Value,
+                getStatisticsViewModel.EndDate.Value, User, getStatisticsViewModel.SelectedAuctionType == 1 ? false : true);
             var viewModel = await CreateAuctionsStatisticsViewModel(auctions);
             return Ok(viewModel);
         }
@@ -77,8 +79,8 @@ namespace SamsAuctions.Controllers
         {
             var vm = new GetStatisticsViewModel
             {
-                SelectedAuctionType=1,
-                StartDate=DateTime.UtcNow.AddHours(2),
+                SelectedAuctionType = 1,
+                StartDate = DateTime.UtcNow.AddHours(2),
                 EndDate = DateTime.UtcNow.AddHours(2).AddMonths(1),
                 AuctionTypes = new List<AuctionTypeViewModel>
                       {

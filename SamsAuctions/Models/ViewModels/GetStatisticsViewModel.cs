@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,9 +9,8 @@ namespace SamsAuctions.Models.ViewModels
 {
     public class GetStatisticsViewModel
     {
-       
+
         [Display(Name = "Startdatum")]
-        //[Required(ErrorMessage = "Belopp är obligatoriskt")]
         public DateTime? StartDate { get; set; }
         [Display(Name = "Slutdatum")]
         public DateTime? EndDate { get; set; }

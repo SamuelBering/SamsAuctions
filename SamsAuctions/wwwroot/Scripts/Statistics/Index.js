@@ -1,7 +1,27 @@
-﻿function showStatistics(data) {
+﻿var myChart = null;
+
+function showStatistics(data) {
+
+    if (myChart) {
+        myChart.destroy();
+    }
+
+    var customValidation = document.getElementById("customValidation");
+    customValidation.innerHTML = "";
 
     var ctx = document.getElementById("auctionsChart");
-    var myChart = new Chart(ctx, {
+
+    if (data.points.length === 0) {
+
+
+        //const context = ctx.getContext('2d');
+        //context.clearRect(0, 0, ctx.width, ctx.height);
+
+        customValidation.innerHTML = "<strong>Inga avslutade auktioner funna för denna period</strong>";
+        return;
+    }
+
+    myChart = new Chart(ctx, {
 
         type: 'bar',
         data: {
@@ -11,7 +31,7 @@
                     data: data.reservationPrices,
                     label: "Utgångspris",
                     borderColor: "blue",
-                    backgroundColor:"blue",
+                    backgroundColor: "blue",
                     fill: false
                 },
                 {
