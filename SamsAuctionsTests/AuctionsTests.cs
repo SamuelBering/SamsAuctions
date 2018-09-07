@@ -308,37 +308,107 @@ namespace SamsAuctionsTests
             mockRepo.Verify(repo => repo.GetAuction(auctionId, groupCode));
         }
 
+        private MocksForTests CreateMocksForAddBid(Bid bid, Auction auction, int groupCode)
+        {
+            var mockRepo = new Mock<IAuctionsRepository>();
+            mockRepo.Setup(repo => repo.GetAuction(bid.AuktionID, groupCode)).Returns(Task.FromResult(auction)).Verifiable();
+            mockRepo.Setup(repo => repo.GetAllBids(groupCode, auction.AuktionID)).Returns(Task.FromResult(GetBids(auction.AuktionID))).Verifiable();
+            //GetAllBids
+            var userStoreMock = new Mock<IUserStore<AppUser>>();
+            var userManagerMock = new Mock<UserManager<AppUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
 
-        //[Fact]
-        //public async Task AddBid_ThrowsInvalidOperationException_WhenBidAmountIsLowerThanOrEqualWithHighestBid()
-        //{
-        //    //arrange
-        //    var groupCode = 1;
+            return new MocksForTests
+            {
+                MockRepo = mockRepo,
+                MockUserManager = userManagerMock,
+            };
+        }
 
-        //    var bid = new Bid
-        //    {
-        //        AuktionID = 1,
-        //        Summa = 1,
-        //        Budgivare = "TestBudgivare",
-        //        BudID = 97,
-        //    };
-        //    var auction = GetAuctions("testUserName", groupCode).First();
+        [Fact]
+        public async Task AddBid_ThrowsInvalidOperationException_WhenBidAmountIsLowerThanOrEqualWithHighestBid()
+        {
+            //arrange
+            var groupCode = 1;
 
+            var bid = new Bid
+            {
+                AuktionID = 1,
+                Summa = 1,
+                Budgivare = "TestBudgivare",
+                BudID = 97,
+            };
+            var auction = GetAuctions("testUserName", groupCode).First();
+            var mocks = CreateMocksForAddBid(bid, auction, groupCode);
 
-        //    var mockRepo = new Mock<IAuctionsRepository>();
-        //    mockRepo.Setup(repo => repo.GetAuction(bid.AuktionID, groupCode)).Returns(Task.FromResult(auction)).Verifiable();
-        //    mockRepo.Setup(repo => repo.GetAllBids(groupCode, auction.AuktionID)).Returns(Task.FromResult(GetBids(auction.AuktionID))).Verifiable();
-        //    //GetAllBids
-        //    var userStoreMock = new Mock<IUserStore<AppUser>>();
-        //    var userManagerMock = new Mock<UserManager<AppUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
-        //    var auctions = new Auctions(mockRepo.Object, userManagerMock.Object);
-        //    //act
-        //    await auctions.GetAuction(auctionId, groupCode);
-        //    //assert
-        //    mockRepo.Verify(repo => repo.GetAuction(auctionId, groupCode));
-        //}
+            var auctions = new Auctions(mocks.MockRepo.Object, mocks.MockUserManager.Object);
 
 
+            //act and assert
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await auctions.AddBid(bid, groupCode);
+            });
+
+
+        }
+
+        [Fact]
+        public async Task AddBid_CallsRepositoryAddBid_WhenBidAmountIsHigherThanHighestBid()
+        {
+            //arrange
+            var groupCode = 1;
+
+            var bid = new Bid
+            {
+                AuktionID = 2,
+                Summa = 350,
+                Budgivare = "TestBudgivare",
+                BudID = 97,
+            };
+            var auction = GetAuctions("testUserName", groupCode).First(a => a.AuktionID == bid.AuktionID);
+            var mocks = CreateMocksForAddBid(bid, auction, groupCode);
+
+            var auctions = new Auctions(mocks.MockRepo.Object, mocks.MockUserManager.Object);
+
+            //act
+            await auctions.AddBid(bid, groupCode);
+            //assert
+            mocks.MockRepo.Verify(r => r.AddBid(bid));
+
+        }
+
+        private MocksForTests CreateMocksForGetHighestBid(Auction auction)
+        {
+            var mockRepo = new Mock<IAuctionsRepository>();
+            mockRepo.Setup(repo => repo.GetAllBids(auction.Gruppkod, auction.AuktionID)).Returns(Task.FromResult(GetBids(auction.AuktionID))).Verifiable();
+
+            var userStoreMock = new Mock<IUserStore<AppUser>>();
+            var userManagerMock = new Mock<UserManager<AppUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
+
+            return new MocksForTests
+            {
+                MockRepo = mockRepo,
+                MockUserManager = userManagerMock,
+            };
+        }
+
+        [Fact]
+        public async Task GetHighestBid_ReturnsNull_WhenThereIsNoBids()
+        {
+            var groupCode = 1;
+            //arrange
+            var auction = GetAuctions("UserName", groupCode).First(a => a.AuktionID == 4);
+
+            var mocks = CreateMocksForGetHighestBid(auction);
+            var auctions = new Auctions(mocks.MockRepo.Object, mocks.MockUserManager.Object);
+
+            //act
+            var result = await auctions.GetHighestBid(auction);
+
+            Assert.Null(result);
+
+            //assert
+        }
         private AppUser GetTestAppUser(string firstName, string lastName, string userName)
         {
             return new AppUser
