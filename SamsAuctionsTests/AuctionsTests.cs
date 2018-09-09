@@ -56,31 +56,6 @@ namespace SamsAuctionsTests
             mocks.MockRepo.Verify(r => r.AddOrUpdateAuction(mocks.Auction));
             Assert.Equal("", "");
         }
-        //[Theory]
-        //[InlineData(0, "TestUser")]
-        //[InlineData(1, "TestUser")]
-        //public async Task AddOrUpdateAuction_CallsRepositoryAddOrUpdateAuction_WhenUserHasPermissions(int auctionId, string createdBy)
-        //{
-        //    // Arrange
-        //    //var expectedErrorMessage = errorMessage;
-        //    var auction = new Auction()
-        //    {
-        //        AuktionID = auctionId,
-        //        SkapadAv = createdBy,
-        //    };
-        //    var mockRepo = new Mock<IAuctionsRepository>();
-        //    mockRepo.Setup(repo => repo.AddOrUpdateAuction(auction)).Returns(Task.CompletedTask).Verifiable();
-        //    var userMock = new Mock<ClaimsPrincipal>();
-        //    userMock.Setup(user => user.IsInRole("Admin")).Returns(true);
-        //    var userStoreMock = new Mock<IUserStore<AppUser>>();
-        //    var userManagerMock = new Mock<UserManager<AppUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
-        //    userManagerMock.Setup(userManager => userManager.GetUserAsync(userMock.Object)).Returns(Task.FromResult(GetTestAppUser("", "", createdBy)));
-        //    var auctions = new Auctions(mockRepo.Object, userManagerMock.Object);
-        //    //Act
-        //    await auctions.AddOrUpdateAuction(auction, userMock.Object);
-        //    mockRepo.Verify(r => r.AddOrUpdateAuction(auction));
-        //    Assert.Equal("", "");
-        //}
         [Theory]
         [InlineData("User must have created this auction", true, 1, "UserName2")]
         [InlineData("User must be in role: Admin", false, 0, "")]
@@ -98,34 +73,6 @@ namespace SamsAuctionsTests
             // Assert
             Assert.Equal(expectedErrorMessage, exception.Message);
         }
-        //[Theory]
-        //[InlineData("User must have created this auction", true, 1, "UserName2")]
-        //[InlineData("User must be in role: Admin", false, 0, "")]
-        //public async Task AddOrUpdateAuction_ThrowsInvalidOperationException_WhenUserHasNotPermissions(string errorMessage, bool isAdmin, int auctionId, string createdBy)
-        //{
-        //    // Arrange
-        //    var expectedErrorMessage = errorMessage;
-        //    var mockRepo = new Mock<IAuctionsRepository>();
-        //    mockRepo.Setup(repo => repo.AddOrUpdateAuction(It.IsAny<Auction>())).Returns(Task.CompletedTask).Verifiable();
-        //    var userMock = new Mock<ClaimsPrincipal>();
-        //    userMock.Setup(user => user.IsInRole("Admin")).Returns(isAdmin);
-        //    var userStoreMock = new Mock<IUserStore<AppUser>>();
-        //    var userManagerMock = new Mock<UserManager<AppUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
-        //    userManagerMock.Setup(userManager => userManager.GetUserAsync(userMock.Object)).Returns(Task.FromResult(GetTestAppUser("FirstName", "LastName", "UserName")));
-        //    var auctions = new Auctions(mockRepo.Object, userManagerMock.Object);
-        //    var auction = new Auction()
-        //    {
-        //        AuktionID = auctionId,
-        //        SkapadAv = createdBy,
-        //    };
-        //    //Act
-        //    var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
-        //    {
-        //        await auctions.AddOrUpdateAuction(auction, userMock.Object);
-        //    });
-        //    // Assert
-        //    Assert.Equal(expectedErrorMessage, exception.Message);
-        //}
         private IList<Auction> GetAuctions(string createdBy, int groupCode = 1)
         {
             return new List<Auction>
@@ -290,7 +237,6 @@ namespace SamsAuctionsTests
             //assert
             mockRepo.Verify(repo => repo.GetAllBids(groupCode, auctionId));
         }
-
         [Fact]
         public async Task GetAuction_CallsRepositoryGetAuctionWithCorrectArguments()
         {
@@ -307,7 +253,6 @@ namespace SamsAuctionsTests
             //assert
             mockRepo.Verify(repo => repo.GetAuction(auctionId, groupCode));
         }
-
         private MocksForTests CreateMocksForAddBid(Bid bid, Auction auction, int groupCode)
         {
             var mockRepo = new Mock<IAuctionsRepository>();
@@ -316,20 +261,17 @@ namespace SamsAuctionsTests
             //GetAllBids
             var userStoreMock = new Mock<IUserStore<AppUser>>();
             var userManagerMock = new Mock<UserManager<AppUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
-
             return new MocksForTests
             {
                 MockRepo = mockRepo,
                 MockUserManager = userManagerMock,
             };
         }
-
         [Fact]
         public async Task AddBid_ThrowsInvalidOperationException_WhenBidAmountIsLowerThanOrEqualWithHighestBid()
         {
             //arrange
             var groupCode = 1;
-
             var bid = new Bid
             {
                 AuktionID = 1,
@@ -339,25 +281,18 @@ namespace SamsAuctionsTests
             };
             var auction = GetAuctions("testUserName", groupCode).First();
             var mocks = CreateMocksForAddBid(bid, auction, groupCode);
-
             var auctions = new Auctions(mocks.MockRepo.Object, mocks.MockUserManager.Object);
-
-
             //act and assert
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
                 await auctions.AddBid(bid, groupCode);
             });
-
-
         }
-
         [Fact]
         public async Task AddBid_CallsRepositoryAddBid_WhenBidAmountIsHigherThanHighestBid()
         {
             //arrange
             var groupCode = 1;
-
             var bid = new Bid
             {
                 AuktionID = 2,
@@ -367,47 +302,160 @@ namespace SamsAuctionsTests
             };
             var auction = GetAuctions("testUserName", groupCode).First(a => a.AuktionID == bid.AuktionID);
             var mocks = CreateMocksForAddBid(bid, auction, groupCode);
-
             var auctions = new Auctions(mocks.MockRepo.Object, mocks.MockUserManager.Object);
-
             //act
             await auctions.AddBid(bid, groupCode);
             //assert
             mocks.MockRepo.Verify(r => r.AddBid(bid));
-
         }
-
         private MocksForTests CreateMocksForGetHighestBid(Auction auction)
         {
             var mockRepo = new Mock<IAuctionsRepository>();
             mockRepo.Setup(repo => repo.GetAllBids(auction.Gruppkod, auction.AuktionID)).Returns(Task.FromResult(GetBids(auction.AuktionID))).Verifiable();
-
             var userStoreMock = new Mock<IUserStore<AppUser>>();
             var userManagerMock = new Mock<UserManager<AppUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
-
             return new MocksForTests
             {
                 MockRepo = mockRepo,
                 MockUserManager = userManagerMock,
             };
         }
-
         [Fact]
         public async Task GetHighestBid_ReturnsNull_WhenThereIsNoBids()
         {
             var groupCode = 1;
             //arrange
             var auction = GetAuctions("UserName", groupCode).First(a => a.AuktionID == 4);
-
             var mocks = CreateMocksForGetHighestBid(auction);
             var auctions = new Auctions(mocks.MockRepo.Object, mocks.MockUserManager.Object);
-
             //act
             var result = await auctions.GetHighestBid(auction);
-
             Assert.Null(result);
-
             //assert
+        }
+        [Fact]
+        public async Task GetHighestBid_ReturnsHighestBid_WhenThereIsBids()
+        {
+            //arrange
+            var groupCode = 1;
+            var expectedAmount = 300;
+            var auction = GetAuctions("UserName", groupCode).First(a => a.AuktionID == 2);
+            var mocks = CreateMocksForGetHighestBid(auction);
+            var auctions = new Auctions(mocks.MockRepo.Object, mocks.MockUserManager.Object);
+            //act
+            var result = await auctions.GetHighestBid(auction);
+            Assert.Equal(expectedAmount, result.Summa);
+            //assert
+        }
+        [Fact]
+        public async Task GetWinningBid_ThrowsInvalidOperationException_WhenAuctionIsOpen()
+        {
+            //arrange
+            var expectedErrorMessage = "This auction is still open";
+            var groupCode = 1;
+            var auction = GetAuctions("UserName", groupCode).First(a => a.AuktionID == 4);
+            var mocks = CreateMocksForGetHighestBid(auction);
+            var auctions = new Auctions(mocks.MockRepo.Object, mocks.MockUserManager.Object);
+            //act
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await auctions.GetWinningBid(auction);
+            });
+            // Assert
+            Assert.Equal(expectedErrorMessage, exception.Message);
+        }
+        [Fact]
+        public async Task GetWinningBid_ReturnsHighestBid_WhenAuctionIsClosed()
+        {
+            //arrange
+            var expectedAmount = 300;
+            var groupCode = 1;
+            var auction = GetAuctions("UserName", groupCode).First(a => a.AuktionID == 2);
+            var mocks = CreateMocksForGetHighestBid(auction);
+            var auctions = new Auctions(mocks.MockRepo.Object, mocks.MockUserManager.Object);
+            //act
+            var result = await auctions.GetWinningBid(auction);
+            // Assert
+            Assert.Equal(expectedAmount, result.Summa);
+        }
+        private MocksForTests CreateMocksForIsOpen()
+        {
+            var mockRepo = new Mock<IAuctionsRepository>();
+            var userStoreMock = new Mock<IUserStore<AppUser>>();
+            var userManagerMock = new Mock<UserManager<AppUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
+            return new MocksForTests
+            {
+                MockRepo = mockRepo,
+                MockUserManager = userManagerMock,
+            };
+        }
+        [Theory]
+        [InlineData(5000, 01, 1, true)]
+        [InlineData(1000, 01, 1, false)]
+        public void IsOpen_ReturnsOpenStatus(int endYear, int endMonth, int endDay, bool expectedStatus)
+        {
+            //arrange
+            var endDate = new DateTime(endYear, endMonth, endDay);
+            var auction = new Auction
+            {
+                SlutDatum = endDate,
+            };
+            var mocks = CreateMocksForIsOpen();
+            var auctions = new Auctions(mocks.MockRepo.Object, mocks.MockUserManager.Object);
+            //act
+            var result = auctions.isOpen(auction);
+            // Assert
+            Assert.Equal(expectedStatus, result);
+        }
+        private MocksForTests CreateMocksForRemoveAuction(Auction auction, string firstName, string lastName, string userName, string createdBy, bool isAdmin)
+        {
+            var mockRepo = new Mock<IAuctionsRepository>();
+            mockRepo.Setup(repo => repo.RemoveAuction(auction.AuktionID, auction.Gruppkod)).Returns(Task.CompletedTask).Verifiable();
+            mockRepo.Setup(repo => repo.GetAllBids(auction.Gruppkod, auction.AuktionID)).Returns(Task.FromResult(GetBids(auction.AuktionID))).Verifiable();
+            mockRepo.Setup(repo => repo.GetAuction(auction.AuktionID,auction.Gruppkod)).Returns(Task.FromResult(auction)).Verifiable();
+            var userMock = new Mock<ClaimsPrincipal>();
+            userMock.Setup(user => user.IsInRole("Admin")).Returns(isAdmin);
+            var userStoreMock = new Mock<IUserStore<AppUser>>();
+            var userManagerMock = new Mock<UserManager<AppUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
+            userManagerMock.Setup(userManager => userManager.GetUserAsync(userMock.Object)).Returns(Task.FromResult(GetTestAppUser(firstName, lastName, userName)));
+            return new MocksForTests
+            {
+                MockRepo = mockRepo,
+                MockUser = userMock,
+                MockUserManager = userManagerMock
+            };
+        }
+        [Theory]
+        [InlineData("User must be in role: Admin", false, 1, "")]
+        [InlineData("User must have created this auction", true, 2, "UserName")]
+        [InlineData("Can´t remove an auction that contains bids", true, 2, "AnnanAnvändare")]
+        public async Task RemoveAuction_ThrowsInvalidOperationException_WhenUserIsNotAllowedToRemoveAuction(string errorMessage, bool isAdmin, int auctionId, string createdBy)
+        {
+            //arrange
+            var groupCode = 1;
+            var auction = GetAuctions(createdBy, groupCode).First(a => a.AuktionID == auctionId);
+            var mocks = CreateMocksForRemoveAuction(auction, "FirstName", "LastName", createdBy, createdBy, isAdmin);
+            var auctions = new Auctions(mocks.MockRepo.Object, mocks.MockUserManager.Object);
+            //Act
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await auctions.RemoveAuction(auction.AuktionID, auction.Gruppkod, mocks.MockUser.Object);
+            });
+            // Assert
+            Assert.Equal(errorMessage, exception.Message);
+        }
+        [Fact]
+        public async Task RemoveAuction_CallsRepositoryRemoveAuctionWithCorrectArguments()
+        {
+            //arrange
+            var groupCode = 1;
+            var auction = GetAuctions("TestUser", groupCode).First(a => a.AuktionID == 3);
+            var mocks = CreateMocksForRemoveAuction(auction, "FirstName", "LastName", "TestUser", "TestUser", true);
+            var auctions = new Auctions(mocks.MockRepo.Object, mocks.MockUserManager.Object);
+            //act
+            await auctions.RemoveAuction(auction.AuktionID, groupCode, mocks.MockUser.Object);
+            //assert
+            mocks.MockRepo.Verify(r => r.RemoveAuction(auction.AuktionID, groupCode));
         }
         private AppUser GetTestAppUser(string firstName, string lastName, string userName)
         {
