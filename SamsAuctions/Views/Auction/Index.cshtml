@@ -2,21 +2,22 @@
 @model AuctionsIndexViewModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Auktioner";
 }
 
-<h2>Index</h2>
+<h2>Alla auktioner</h2>
+<br />
 
 
 @if (User.IsInRole("Admin"))
 {
     <p>
-        <a data-ajax="true"
+        <a class="btn btn-primary btn-sm" data-ajax="true"
            asp-action="EditAuctionModal" data-ajax-method="GET"
            data-ajax-mode="replace"
            data-ajax-complete="onCompleteLoadingEditModal"
            data-ajax-update="#modalContainer">
-            Lägg till auktion
+            <span class="glyphicon glyphicon-plus"></span> Lägg till auktion
         </a>
     </p>
 }
@@ -32,8 +33,10 @@
             @*Category: <input type="text" name="CategoryFilter" value="@ViewData["CurrentCategoryFilter"]" />*@
             Titel: <input asp-for="TitleFilter" />
             Beskrivning: <input asp-for="DescriptionFilter" />
-
-            <input type="submit" value="Sök" class="btn btn-default" /> |
+            <button type="submit" value="Sök">
+                <span class="glyphicon glyphicon-search"></span> Sök
+            </button>
+            @*<input type="submit" value="Sök" class="btn btn-default" /> |*@
             <a asp-action="Index">Tillbaka till hela listan</a>
         </p>
     </div>
@@ -51,15 +54,21 @@
 
             </th>
             <th>
-                Start datum
-                @*<a asp-action="Index" asp-route-sortOrder="@ViewData["PostedSortParm"]">
-                        @Html.DisplayNameFor(model => model.DateTime)
-                    </a>*@
+                Startdatum
             </th>
             <th>
+              
                 <a asp-action="Index" asp-route-sortOrder="@Model.EndDateSortParam" asp-route-titleFilter="@Model.TitleFilter"
                    asp-route-descriptionFilter="@Model.DescriptionFilter">
-                    Slut datum
+                    @if (Model.EndDateSortParam == "endDate_desc")
+                    {
+                        <span data-toggle="tooltip" title="Sortera efter slutdatum" class="glyphicon glyphicon-sort-by-attributes"></span>
+                    }
+                    else
+                    {
+                        <span data-toggle="tooltip" title="Sortera efter slutdatum" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                    }
+                     Slutdatum
                 </a>
             </th>
             <th>
@@ -108,34 +117,36 @@
                     }
                     else
                     {
-                        <a data-ajax="true"
+                        <a class="auctionIcons" data-ajax="true"
                            asp-controller="bids"
                            asp-action="GetClosedAuctionDetails" data-ajax-method="GET"
                            asp-route-auctionId="@item.AuctionId"
                            data-ajax-mode="replace"
                            data-ajax-complete="onCompleteLoadingClosedAuctionDetailsModal"
                            data-ajax-update="#modalContainer">
-                            Visa detaljer
+                            <span data-toggle="tooltip" title="Visa detaljer" class="glyphicon glyphicon-new-window"></span> 
                         </a>
                     }
 
                     @if (item.UserAllowedToUpdate)
                     {
-                        <a data-ajax="true"
+                        <a class="auctionIcons" data-ajax="true"
                            asp-route-id="@item.AuctionId"
                            asp-action="EditAuctionModal" data-ajax-method="GET"
                            data-ajax-mode="replace"
                            data-ajax-complete="onCompleteLoadingEditModal"
                            data-ajax-update="#modalContainer">
-                            Redigera auktion
+                            <span data-toggle="tooltip" title="Redigera" class="glyphicon glyphicon-edit"></span>
                         </a>
                     }
 
                     @if (item.UserAllowedToRemove)
                     {
-                        <form method="post" asp-action="Delete">
+                        <form class="auctionIcons" method="post" asp-action="Delete">
                             <input type="hidden" name="id" value="@item.AuctionId">
-                            <button type="submit" class="btn btn-danger btn-sm">Ta bort</button>
+                            <button type="submit" >
+                                <span data-toggle="tooltip" title="Ta bort" class="glyphicon glyphicon-remove"></span>
+                            </button>
                         </form>
                     }
                 </td>
@@ -155,7 +166,7 @@
             $('#editAuctionModal').modal('show');
         }
 
-        function onCompleteLoadingClosedAuctionDetailsModal() {           
+        function onCompleteLoadingClosedAuctionDetailsModal() {
             $('#closedAuctionDetailsModal').modal('show');
         }
     </script>

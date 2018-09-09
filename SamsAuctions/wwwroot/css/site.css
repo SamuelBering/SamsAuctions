@@ -1,4 +1,8 @@
-﻿#loadingSpinner {
+﻿.custom-select[multiple]{
+    height:40px;
+}
+
+#loadingSpinner {
     font-size: 500%;
     position: fixed;
     left: 50vw;
@@ -7,6 +11,11 @@
 
 .animationStop {
     display: none;
+}
+
+.auctionIcons {
+    display: inline-block;
+    margin-left: 5px;
 }
 
 .animationStart {

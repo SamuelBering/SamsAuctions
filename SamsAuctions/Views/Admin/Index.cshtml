@@ -34,8 +34,10 @@
                           data-ajax-complete="stopSpinAnimation"
                           data-ajax-failure="onFailure">
                         <input type="hidden" name="UserId" value="@user.UserId" />
-                        <select class="custom-select select-multiple" id="SelectedRoleIds" name="SelectedRoleIds" multiple="multiple" asp-items="@user.Roles"></select>
-                        <input class="btn btn-primary btn-sm submitBtn" type="submit" value="Spara" />
+                        <select class="custom-select" id="SelectedRoleIds" name="SelectedRoleIds" multiple="multiple" asp-items="@user.Roles"></select>
+                        <div>
+                            <input class="btn btn-primary btn-sm submitBtn" type="submit" value="Spara" />
+                        </div>
                     </form>
 
 
@@ -58,9 +60,9 @@
         });
 
         function onFailure(a, b, c) {
-            
+
             alert("Det gick inte att updatera användarroll!");
-           
+
             console.log(`Unable to update user role: `);
             console.log(a);
         }

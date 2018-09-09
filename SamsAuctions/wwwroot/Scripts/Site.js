@@ -1,4 +1,8 @@
-﻿function deleteAllRegularUsers() {
+﻿$(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+});
+
+function deleteAllRegularUsers() {
     var remove = confirm("Vill du ta bort alla regular users?");
     if (remove) {
         $.post("/account/DeleteAllRegularUsers", {}, (data) => {
