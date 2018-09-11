@@ -19,6 +19,7 @@
                       data-ajax-update="#bidsContainer"
                       data-ajax-failure="onAjaxFailure"
                       data-ajax-complete="onCompletePostBid"
+                      data-ajax-success="AnimateOkSymbol"
                       asp-action="Bid">
                     <input type="hidden" name="AuctionId" value="@Model.AuctionId" />
                     <input type="hidden" name="Bidder" value="@Model.Bidder" />

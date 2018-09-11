@@ -31,3 +31,12 @@ function onAjaxFailure(a, b, c) {
     alert("Ett oväntat fel inträffade. (se konsolen för mer info)");
     console.log(a);
 }
+
+
+function AnimateOkSymbol() {
+    var okSymbol = $("#okSymbol");
+    okSymbol.removeClass("hideOkSymbol").addClass("animateOkSymbol");
+    setTimeout(function () {
+        okSymbol.removeClass("animateOkSymbol").addClass("hideOkSymbol");
+    }, 2000);
+}

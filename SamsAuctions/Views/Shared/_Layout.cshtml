@@ -13,7 +13,7 @@
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">WebSiteName</a>
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Nackowskis auktioner</a>
             </div>
             <ul class="nav navbar-nav">
                 <li><a asp-controller="Home" asp-action="Index">Home</a></li>
@@ -22,7 +22,7 @@
                 @if (User.IsInRole("Admin"))
                 {
                     <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin<span class="caret"></span></a>
+                        <a class="dropdown-toggle" data-toggle="dropdown">Admin<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a asp-controller="Admin" asp-action="Index">Hantera användare</a></li>
                             <li><a asp-controller="Statistics" asp-action="Index">Statistik</a></li>
@@ -30,8 +30,6 @@
                         </ul>
                     </li>
                 }
-
-                @*<li><a href="#">Page 2</a></li>*@
 
                 @if (User?.Identity?.IsAuthenticated ?? false)
                 {
@@ -47,79 +45,12 @@
         </div>
     </nav>
 
-    @*<nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarToggler">
-            <a class="navbar-brand" asp-controller="Home" asp-action="Index">Tomasos Pizzeria</a>
-
-            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="Index">Home </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
-                </li>*@
-    @*@if (User?.Identity?.IsAuthenticated ?? false)
-        {
-
-            <li class="nav-item">
-                <a class="nav-link" asp-controller="Product" asp-action="List">Meny</a>
-            </li>
-        }
-
-        @if (User?.IsInRole("Admin") ?? false)
-        {
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Admin
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" asp-controller="Admin" asp-action="Index">Användare</a>
-                    <a class="dropdown-item" asp-controller="AdminOrder" asp-action="OrderList">Beställningar</a>
-                    <a class="dropdown-item" asp-controller="AdminDish" asp-action="Index">Maträtter</a>
-                    <a class="dropdown-item" asp-controller="AdminDish" asp-action="ViewIngredients">Ingredienser</a>
-                </div>
-            </li>
-        }
-
-
-        @if (User?.Identity?.IsAuthenticated ?? false)
-        {
-
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="navbarDropdownSettings" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fa fa-cog" aria-hidden="true"></i>
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownSettings">
-                    <a class="dropdown-item" asp-controller="Account" asp-action="Edit">Konto (@User.Identity.Name)</a>
-                </div>
-            </li>
-        }*@
-
-    @*</ul>*@
-
-    @*@if (User?.Identity?.IsAuthenticated ?? false)
-        {
-            <text>
-                @await Component.InvokeAsync("CartSummary")
-            </text>
-
-            <div class="logout-button">
-                <a asp-controller="Account" asp-action="Logout"><i class="fa fa-sign-out" aria-hidden="true"></i></a>
-            </div>
-        }*@
-
-
-    @*</div>
-        </nav>*@
-
-
-
     <div class="container">
         <div id="loadingSpinner" class="animationStop">
             <span class="fa fa-spinner"></span>
+        </div>
+        <div id="okSymbol" class="hideOkSymbol">
+            <span class="glyphicon glyphicon-ok"></span>
         </div>
 
         @RenderBody()

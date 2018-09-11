@@ -18,6 +18,10 @@
     margin-left: 5px;
 }
 
+.auctionIcons.removeIcon{
+    color: red;
+}
+
 .animationStart {
     display: block;
 }
@@ -38,3 +42,72 @@
         transform: rotate(360deg);
     }
 }
+
+/*--------------okSymbol------------*/
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes animationOkSymbol {
+    0% {
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    70% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Standard syntax */
+@keyframes animationOkSymbol {
+    0% {
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+
+    70% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+
+#okSymbol {
+    opacity: 0;
+    position: fixed;
+    top: 50vh;
+    left: 50vw;
+    z-index: 100;
+    transform: translate(-50%, -50%);
+}
+
+    #okSymbol span {
+        font-size: 100px;
+        color: green;
+    }
+
+
+.animateOkSymbol {
+    -webkit-animation-name: animationOkSymbol; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 2s; /* Safari 4.0 - 8.0 */
+    animation-name: animationOkSymbol;
+    animation-duration: 2s;
+}
+
+.hideOkSymbol {
+    display: none;
+}
+

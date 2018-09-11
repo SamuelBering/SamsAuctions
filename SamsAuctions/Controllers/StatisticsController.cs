@@ -52,13 +52,13 @@ namespace SamsAuctions.Controllers
                 {
                     if (auction.SlutDatum.Month == lastDate.Month)
                     {
-                        viewModel.Points.Add($"({auctionTitelAbbr})");
+                        viewModel.Points.Add($"{auctionTitelAbbr}");
                     }
                     else
-                        viewModel.Points.Add($"{auction.SlutDatum.ToString("MMM", CultureInfo.CreateSpecificCulture("sv-SE"))} ({auctionTitelAbbr})");
+                        viewModel.Points.Add($"{auction.SlutDatum.ToString("MMM", CultureInfo.CreateSpecificCulture("sv-SE")).ToUpper()} - {auctionTitelAbbr}");
                 }
                 else
-                    viewModel.Points.Add($"{auction.SlutDatum.ToString("yyyy MMM", CultureInfo.CreateSpecificCulture("sv-SE"))} ({auctionTitelAbbr})");
+                    viewModel.Points.Add($"{auction.SlutDatum.ToString("yyyy MMM", CultureInfo.CreateSpecificCulture("sv-SE")).ToUpper()} - {auctionTitelAbbr}");
 
                 lastDate = auction.SlutDatum;
             }
@@ -77,11 +77,14 @@ namespace SamsAuctions.Controllers
 
         public IActionResult Index()
         {
+            var currentDateTime = DateTime.UtcNow.AddHours(2);
+            var StartDate = new DateTime(currentDateTime.Year, currentDateTime.Month, currentDateTime.Day, currentDateTime.Hour, currentDateTime.Minute, 0);
+
             var vm = new GetStatisticsViewModel
             {
                 SelectedAuctionType = 1,
-                StartDate = DateTime.UtcNow.AddHours(2),
-                EndDate = DateTime.UtcNow.AddHours(2).AddMonths(1),
+                StartDate = StartDate,
+                EndDate = StartDate.AddMonths(1),
                 AuctionTypes = new List<AuctionTypeViewModel>
                       {
                            new AuctionTypeViewModel {Id = 1, Type = "Alla auktioner"},

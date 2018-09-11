@@ -8,7 +8,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <a asp-action="Index" class="close">&times;</a>
+                <a href="javascript: closeEditModal();" class="close">&times;</a>
                 <h4 class="modal-title">Lägg till/uppdatera auktion</h4>
             </div>
             <div class="modal-body">
@@ -29,7 +29,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="StartDate"></label>
-                        <input asp-for="StartDate" class="form-control" />
+                        <input asp-for="StartDate"  class="form-control" />
                         <span asp-validation-for="StartDate"></span>
                     </div>
                     <div class="form-group">
@@ -42,13 +42,9 @@
                         <input asp-for="ReservationPrice" class="form-control" />
                         <span asp-validation-for="ReservationPrice"></span>
                     </div>
-                    @*<div class="form-group">
-                        <label asp-for="CreatedBy"></label>
-                        <input asp-for="CreatedBy" class="form-control" />
-                        <span asp-validation-for="CreatedBy"></span>
-                    </div>*@
+                   
                     <button type="submit" class="btn btn-primary">Spara</button>
-                    <a asp-action="Index" class="btn btn-secondary">Avbryt</a>
+                    <a href="javascript: closeEditModal();" class="btn btn-secondary">Avbryt</a>
                 </form>
 
 

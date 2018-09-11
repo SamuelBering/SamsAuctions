@@ -32,10 +32,10 @@ namespace SamsAuctions.Controllers
             groupCode = appConfiguration.GroupCode;
         }
 
-        public async Task<IActionResult> Index(string sortOrder, string titleFilter, string descriptionFilter)
+        public async Task<IActionResult> Index(string sortOrder, string titleFilter, string descriptionFilter, bool? animateOkSymbol)
         {
 
-            var model = new AuctionsIndexViewModel(sortOrder, titleFilter, descriptionFilter);
+            var model = new AuctionsIndexViewModel(sortOrder, titleFilter, descriptionFilter, animateOkSymbol);
 
             var auctionViewModelList = Mapper.Map<IList<Auction>, IList<AuctionViewModel>>(await _auctions.GetAllAuctions(groupCode, User));
 
@@ -72,31 +72,26 @@ namespace SamsAuctions.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            //try
-            //{
             await _auctions.RemoveAuction(id, groupCode, User);
-            //}
-            //catch (InvalidOperationException ex)
-            //{
-
-            //}
-
-            //var model = new AuctionsIndexViewModel(null, null, null);
-
-            //var auctionViewModelList = Mapper.Map<IList<Auction>, IList<AuctionViewModel>>(await _auctions.GetAllAuctions(groupCode));
-
-            //model.Auctions = auctionViewModelList as List<AuctionViewModel>;
-
-            //return View("Index", model);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { animateOkSymbol = true });
         }
-       
+
+        public IActionResult GetRemoveAuctionModal(int id)
+        {
+            return PartialView("RemoveAuctionModal", new RemoveAuctionViewModel
+            {
+                AuctionId = id,
+            });
+        }
 
         public async Task<IActionResult> EditAuctionModal(int? id)
         {
             var auctionViewModel = new AuctionViewModel();
             auctionViewModel.GroupCode = groupCode;
             auctionViewModel.CreatedBy = (await _userManager.GetUserAsync(User)).UserName;
+            var currentDateTime = DateTime.UtcNow.AddHours(2);
+            auctionViewModel.StartDate = new DateTime(currentDateTime.Year, currentDateTime.Month, currentDateTime.Day, currentDateTime.Hour, currentDateTime.Minute, 0);
+            auctionViewModel.EndDate = auctionViewModel.StartDate.AddDays(1);
 
             if (id != null)
                 auctionViewModel = Mapper.Map<Auction, AuctionViewModel>(await _auctions.GetAuction(id.Value, groupCode));
@@ -115,19 +110,8 @@ namespace SamsAuctions.Controllers
 
                 await _auctions.AddOrUpdateAuction(auction, User);
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { animateOkSymbol = true });
             }
-            //await _repository.AddOrUpdateAuction(new AuctionViewModel
-            //{
-            //    CreatedBy = "BadAss",
-            //    Description = "A good gun",
-            //    StartDate = new DateTime(2018, 08, 10),
-            //    EndDate = new DateTime(2018, 12, 24),
-            //    GroupCode = 7,
-            //    ReservationPrice = 4400,
-            //    Title = "Machine gun",
-            //});
-
             return View(model);
         }
     }

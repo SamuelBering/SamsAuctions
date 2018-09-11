@@ -1,0 +1,27 @@
+﻿@model RemoveAuctionViewModel
+<!-- Modal -->
+<div id="removeAuctionModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="javascript: $('#removeAuctionModal').modal('hide');" class="close">&times;</a>
+                <h4 class="modal-title">Ta bort auktion</h4>
+            </div>
+            <div class="modal-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <form id="removeAuctionForm" method="post" asp-action="Delete">
+                    <input type="hidden" name="id" value="@Model.AuctionId" />
+                    <button type="submit" class="btn btn-danger">Ta bort</button>
+                    <a href="javascript: $('#removeAuctionModal').modal('hide');" class="btn btn-secondary">Avbryt</a>
+                </form>
+
+
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+
+    </div>
+</div>

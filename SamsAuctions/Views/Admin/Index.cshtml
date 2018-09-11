@@ -2,14 +2,16 @@
 
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Användare";
 }
 
 
 
-<div class="bg-info text-white">
-    <h4>Användare</h4>
+<div>
+    <h3>Hantera användare</h3>
 </div>
+<br />
+
 
 <table class="table table-striped">
     <tr><th>Förnamn</th><th>Efternamn</th><th>Användarnamn</th><th>Roll</th></tr>
@@ -31,6 +33,7 @@
                     <form asp-action="UpdateUserRole" data-ajax="true"
                           data-ajax-method="POST"
                           data-ajax-begin="startSpinAnimation"
+                          data-ajax-success="AnimateOkSymbol"
                           data-ajax-complete="stopSpinAnimation"
                           data-ajax-failure="onFailure">
                         <input type="hidden" name="UserId" value="@user.UserId" />

@@ -15,6 +15,7 @@
         <a class="btn btn-primary btn-sm" data-ajax="true"
            asp-action="EditAuctionModal" data-ajax-method="GET"
            data-ajax-mode="replace"
+           data-ajax-begin="startSpinAnimation"
            data-ajax-complete="onCompleteLoadingEditModal"
            data-ajax-update="#modalContainer">
             <span class="glyphicon glyphicon-plus"></span> Lägg till auktion
@@ -57,23 +58,32 @@
                 Startdatum
             </th>
             <th>
-              
+
                 <a asp-action="Index" asp-route-sortOrder="@Model.EndDateSortParam" asp-route-titleFilter="@Model.TitleFilter"
                    asp-route-descriptionFilter="@Model.DescriptionFilter">
-                    @if (Model.EndDateSortParam == "endDate_desc")
+                    @if (Model.CurrentSortOrder == null)
                     {
                         <span data-toggle="tooltip" title="Sortera efter slutdatum" class="glyphicon glyphicon-sort-by-attributes"></span>
                     }
-                    else
+                    else if (Model.CurrentSortOrder == "endDate_desc")
                     {
                         <span data-toggle="tooltip" title="Sortera efter slutdatum" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
                     }
-                     Slutdatum
+                    Slutdatum
                 </a>
             </th>
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@Model.ReservationPriceSortParam" asp-route-titleFilter="@Model.TitleFilter"
                    asp-route-descriptionFilter="@Model.DescriptionFilter">
+
+                    @if (Model.CurrentSortOrder == "reservationPrice")
+                    {
+                        <span data-toggle="tooltip" title="Sortera efter utropspris" class="glyphicon glyphicon-sort-by-attributes"></span>
+                    }
+                    else if (Model.CurrentSortOrder == "reservationPrice_desc")
+                    {
+                        <span data-toggle="tooltip" title="Sortera efter utropspris" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                    }
                     Utropspris
                 </a>
             </th>
@@ -110,10 +120,11 @@
                 </td>
                 <td>
 
-                    @*<a asp-action="Edit" asp-route-id="@item.AuctionId">Edit</a> |*@
                     @if (item.IsOpen)
                     {
-                        <a asp-controller="bids" asp-action="GetOpenAuctionDetails" asp-route-auctionId="@item.AuctionId">Visa detaljer / lägg bud</a>
+                        <a asp-controller="bids" asp-action="GetOpenAuctionDetails" asp-route-auctionId="@item.AuctionId">
+                            <span data-toggle="tooltip" title="Lägg bud / visa detaljer" class="glyphicon glyphicon-plus"></span>
+                        </a>
                     }
                     else
                     {
@@ -124,7 +135,7 @@
                            data-ajax-mode="replace"
                            data-ajax-complete="onCompleteLoadingClosedAuctionDetailsModal"
                            data-ajax-update="#modalContainer">
-                            <span data-toggle="tooltip" title="Visa detaljer" class="glyphicon glyphicon-new-window"></span> 
+                            <span data-toggle="tooltip" title="Visa detaljer" class="glyphicon glyphicon-new-window"></span>
                         </a>
                     }
 
@@ -134,6 +145,7 @@
                            asp-route-id="@item.AuctionId"
                            asp-action="EditAuctionModal" data-ajax-method="GET"
                            data-ajax-mode="replace"
+                           data-ajax-begin="startSpinAnimation"
                            data-ajax-complete="onCompleteLoadingEditModal"
                            data-ajax-update="#modalContainer">
                             <span data-toggle="tooltip" title="Redigera" class="glyphicon glyphicon-edit"></span>
@@ -142,12 +154,22 @@
 
                     @if (item.UserAllowedToRemove)
                     {
-                        <form class="auctionIcons" method="post" asp-action="Delete">
-                            <input type="hidden" name="id" value="@item.AuctionId">
-                            <button type="submit" >
-                                <span data-toggle="tooltip" title="Ta bort" class="glyphicon glyphicon-remove"></span>
-                            </button>
-                        </form>
+                        <a class="auctionIcons removeIcon"
+                           asp-action="GetRemoveAuctionModal"
+                           asp-route-id="@item.AuctionId"
+                           data-ajax="true"
+                           data-ajax-mode="replace"
+                           data-ajax-begin="startSpinAnimation"
+                           data-ajax-complete="onCompleteLoadingRemoveAuctionModal"
+                           data-ajax-update="#modalContainer">
+                            <span data-toggle="tooltip" title="Ta bort auktion" class="glyphicon glyphicon-remove"></span>
+                        </a>
+                        @*<form class="auctionIcons" method="post" asp-action="Delete">
+                                <input type="hidden" name="id" value="@item.AuctionId">
+                                <button type="submit">
+                                    <span data-toggle="tooltip" title="Ta bort" class="glyphicon glyphicon-remove"></span>
+                                </button>
+                            </form>*@
                     }
                 </td>
             </tr>
@@ -161,13 +183,44 @@
 
 @section Scripts{
     <script>
+
+        $(window).on('load', () => {
+            var animateOkSymbol = "@Model.AnimateOkSymbol" ==="True";
+            if (animateOkSymbol)
+                AnimateOkSymbol();
+        });
+
+        function onCompleteLoadingRemoveAuctionModal() {
+            document.querySelector("#removeAuctionForm").addEventListener("submit", function (e) {
+                $('#removeAuctionModal').modal('hide');
+                startSpinAnimation();
+            });
+            stopSpinAnimation();
+            $('#removeAuctionModal').modal('show');
+        }
+
         function onCompleteLoadingEditModal() {
+            document.querySelector("#editAuctionForm").addEventListener("submit", function (e) {
+                $('#editAuctionModal').modal('hide');
+                startSpinAnimation();
+            });
+            stopSpinAnimation();
             $.validator.unobtrusive.parse($("#editAuctionForm"));
             $('#editAuctionModal').modal('show');
         }
 
         function onCompleteLoadingClosedAuctionDetailsModal() {
             $('#closedAuctionDetailsModal').modal('show');
+        }
+
+        function closeEditModal() {
+            $('#editAuctionModal').modal('hide');
+            startSpinAnimation();
+            window.location.href =  "@Url.Action("Index", "Auction")";
+        }
+
+        function onSubmitEditModal() {
+
         }
     </script>
 }
