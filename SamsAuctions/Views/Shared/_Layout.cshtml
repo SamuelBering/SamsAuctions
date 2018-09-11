@@ -16,12 +16,12 @@
                 <a class="navbar-brand" asp-controller="Home" asp-action="Index">Nackowskis auktioner</a>
             </div>
             <ul class="nav navbar-nav">
-                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li id="navHomePage"><a asp-controller="Home" asp-action="Index">Home</a></li>
 
-                <li><a asp-controller="Auction" asp-action="Index">Auctions</a></li>
+                <li id="navAuctionsPage"><a asp-controller="Auction" asp-action="Index">Auctions</a></li>
                 @if (User.IsInRole("Admin"))
                 {
-                    <li class="dropdown">
+                    <li id="navAdminPage" class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown">Admin<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a asp-controller="Admin" asp-action="Index">Hantera användare</a></li>

@@ -42,13 +42,6 @@
                             <input class="btn btn-primary btn-sm submitBtn" type="submit" value="Spara" />
                         </div>
                     </form>
-
-
-                    @*<form asp-action="UpdateUserRole" method="post">
-                            <select class="custom-select select-multiple" id="SelectedRoleIds" name="SelectedRoleIds" multiple="multiple" asp-items="@user.Roles"></select>
-                            <input type="hidden" name="UserId" value="@user.UserId" />
-                            <input class="btn btn-primary btn-sm submitBtn" type="submit" value="Spara" />
-                        </form>*@
                 </td>
             </tr>
         }
@@ -58,6 +51,11 @@
 @section Scripts
     {
     <script>
+        $(window).on('load', () => {
+            var nav = $("#navAdminPage");
+            nav.addClass("active");
+        });
+
         $(".submitBtn").click(() => {
             startSpinAnimation();
         });

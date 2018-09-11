@@ -1,5 +1,10 @@
 ﻿var myChart = null;
 
+$(window).on('load', () => {
+    var nav = $("#navAdminPage");
+    nav.addClass("active");
+});
+
 function showStatistics(data) {
 
     if (myChart) {
@@ -47,31 +52,7 @@ function showStatistics(data) {
                     borderColor: "red",
                     backgroundColor: "red",
                     fill: false
-                },
-                //{
-                //    data: asia,
-                //    label: "Asia",
-                //    borderColor: "#3e95cd",
-                //    fill: false
-                //},
-                //{
-                //    data: europe,
-                //    label: "Europe",
-                //    borderColor: "#3e95cd",
-                //    fill: false
-                //},
-                //{
-                //    data: latinAmerica,
-                //    label: "Latin America",
-                //    borderColor: "#3e95cd",
-                //    fill: false
-                //},
-                //{
-                //    data: northAmerica,
-                //    label: "North America",
-                //    borderColor: "#3e95cd",
-                //    fill: false
-                //}
+                }
             ]
         }
     });

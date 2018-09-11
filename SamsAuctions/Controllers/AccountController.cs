@@ -144,20 +144,6 @@ namespace Users.Controllers
 
             return RedirectToAction("Index", "Home");
 
-            //info.Principal //the IPrincipal with the claims from facebook
-            //info.ProviderKey //an unique identifier from Facebook for the user that just signed in
-            //info.LoginProvider //a string with the external login provider name, in this case Facebook
-
-            //to sign the user in if there's a local account associated to the login provider
-            //var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);            
-            //result.Succeeded will be false if there's no local associated account 
-
-            //to associate a local user account to an external login provider
-            //await _userInManager.AddLoginAsync(aUserYoullHaveToCreate, info);        
-
-
-            //return View(model);
-            //return Redirect("~/");
         }
 
         [HttpPost]

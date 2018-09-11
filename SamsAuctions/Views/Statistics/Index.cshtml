@@ -22,8 +22,7 @@
                   data-ajax-success="showStatistics"
                   data-ajax-complete="stopSpinAnimation"
                   asp-action="GetAuctionsStatistics">
-                @*<input type="hidden" name="AuctionId" value="@Model.AuctionId" />
-            <input type="hidden" name="Bidder" value="@Model.Bidder" />*@
+
                 <div class="form-group">
                     <label asp-for="StartDate"></label>
                     <input asp-for="StartDate" class="form-control" />
@@ -47,7 +46,7 @@
                 <div id="customValidation"></div>
                 <button type="submit" class="btn btn-primary">Hämta statistik</button>
             </form>
-        </div> 
+        </div>
     </div>
 
 </div>

@@ -188,6 +188,9 @@
             var animateOkSymbol = "@Model.AnimateOkSymbol" ==="True";
             if (animateOkSymbol)
                 AnimateOkSymbol();
+
+           var nav = $("#navAuctionsPage");
+           nav.addClass("active");
         });
 
         function onCompleteLoadingRemoveAuctionModal() {
@@ -201,6 +204,9 @@
 
         function onCompleteLoadingEditModal() {
             document.querySelector("#editAuctionForm").addEventListener("submit", function (e) {
+                var $startDate = new Date($("#editAuctionForm #startDate").val());
+                var $endDate = new Date($("#editAuctionForm #endDate").val());
+
                 $('#editAuctionModal').modal('hide');
                 startSpinAnimation();
             });

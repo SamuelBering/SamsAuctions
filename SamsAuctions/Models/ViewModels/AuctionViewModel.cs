@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SamsAuctions.Models.ViewModels
 {
-    public class AuctionViewModel
+    public class AuctionViewModel : IValidatableObject
     {
         public int AuctionId { get; set; }
         [Display(Name = "Titel")]
@@ -30,5 +31,15 @@ namespace SamsAuctions.Models.ViewModels
         public bool UserAllowedToUpdate { get; set; }
         public bool UserAllowedToRemove { get; set; }
         public bool IsOpen { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (EndDate < StartDate)
+            {
+                yield return
+                         new ValidationResult(errorMessage: "Slutdatum måste vara senare än startdatum",
+                                              memberNames: new[] { "EndDate" });
+            }
+        }
     }
 }
