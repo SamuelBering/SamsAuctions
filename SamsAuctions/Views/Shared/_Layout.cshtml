@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject UserManager<AppUser> userManager
+
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -32,17 +34,21 @@
                     </li>
                 }
 
-                @if (User?.Identity?.IsAuthenticated ?? false)
-                {
-                    <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
-                }
-                else
-                {
-                    <li><a asp-controller="Account" asp-action="Login">Login</a></li>
-                }
-
-
             </ul>
+
+            @if (User?.Identity?.IsAuthenticated ?? false)
+            {
+                <ul class="nav navbar-nav navbar-right">
+                    @{ 
+                        var userName = (await userManager.GetUserAsync(User)).UserName;
+                    }
+                    <li>
+                        <a><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;&nbsp;@userName</a>
+                    </li>
+                    <li><a asp-controller="Account" asp-action="Logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                </ul>
+            }
+
         </div>
     </nav>
 

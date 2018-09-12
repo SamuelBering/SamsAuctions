@@ -32,24 +32,18 @@ namespace SamsAuctions.Controllers
             groupCode = appConfiguration.GroupCode;
         }
 
-        public async Task<IActionResult> Index(string sortOrder, string titleFilter, string descriptionFilter, bool? animateOkSymbol)
+        private void FilterAuctions(AuctionsIndexViewModel model, string titleFilter, string descriptionFilter)
         {
-
-            var model = new AuctionsIndexViewModel(sortOrder, titleFilter, descriptionFilter, animateOkSymbol);
-
-            var auctionViewModelList = Mapper.Map<IList<Auction>, IList<AuctionViewModel>>(await _auctions.GetAllAuctions(groupCode, User));
-
-            model.Auctions = auctionViewModelList as List<AuctionViewModel>;
-
-            model.CurrentUser = await _userManager.GetUserAsync(User);
-
             if (!String.IsNullOrEmpty(titleFilter) || !String.IsNullOrEmpty(descriptionFilter))
             {
                 titleFilter = titleFilter ?? "";
                 descriptionFilter = descriptionFilter ?? "";
                 model.Auctions = model.Auctions.Where(a => a.Title.ToLower().Contains(titleFilter.ToLower()) && a.Description.ToLower().Contains(descriptionFilter.ToLower())).ToList();
             }
+        }
 
+        private void SortAuctions(AuctionsIndexViewModel model, string sortOrder)
+        {
             switch (sortOrder)
             {
                 case "endDate_desc":
@@ -65,6 +59,16 @@ namespace SamsAuctions.Controllers
                     model.Auctions = model.Auctions.OrderBy(a => a.EndDate).ToList();
                     break;
             }
+        }
+
+        public async Task<IActionResult> Index(string sortOrder, string titleFilter, string descriptionFilter, bool? animateOkSymbol)
+        {
+            var model = new AuctionsIndexViewModel(sortOrder, titleFilter, descriptionFilter, animateOkSymbol);
+            var auctionViewModelList = Mapper.Map<IList<Auction>, IList<AuctionViewModel>>(await _auctions.GetAllAuctions(groupCode, User));
+            model.Auctions = auctionViewModelList as List<AuctionViewModel>;
+            model.CurrentUser = await _userManager.GetUserAsync(User);
+            FilterAuctions(model, titleFilter, descriptionFilter);
+            SortAuctions(model, sortOrder);
             return View(model);
         }
 

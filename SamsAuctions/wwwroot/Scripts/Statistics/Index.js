@@ -15,14 +15,9 @@ function showStatistics(data) {
     customValidation.innerHTML = "";
 
     var ctx = document.getElementById("auctionsChart");
-
+     
     if (data.points.length === 0) {
-
-
-        //const context = ctx.getContext('2d');
-        //context.clearRect(0, 0, ctx.width, ctx.height);
-
-        customValidation.innerHTML = "<strong>Inga avslutade auktioner funna för denna period</strong>";
+        customValidation.innerHTML = "<strong>Inga avslutade auktioner som har bud lagda funna för denna period</strong>";
         return;
     }
 
