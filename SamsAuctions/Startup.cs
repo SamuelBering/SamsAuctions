@@ -59,6 +59,7 @@ namespace SamsAuctions
 
             services.AddTransient<IAuctionsRepository, AuctionsRepository>();
             services.AddTransient<IAuctions, Auctions>();
+            services.AddTransient<IStatisticsService, StatisticsService>();
             services.AddTransient<IUserRolesService, UserRolesService>();
 
             services.AddAutoMapper();

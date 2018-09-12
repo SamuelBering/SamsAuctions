@@ -3,17 +3,17 @@
 @{
     ViewData["Title"] = "Logga in";
 }
- 
+
 <!-- Modal -->
 <div id="loginModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
         <!-- Modal content-->
-        <div class="modal-content"> 
+        <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Logga in</h4>
             </div>
-            <div class="modal-body">               
+            <div class="modal-body">
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                 <form asp-action="Login" method="post">
                     <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
@@ -29,7 +29,11 @@
                     </div>
                     <button class="btn btn-primary btn-sm" type="submit">Logga in</button>
                     <a class="btn btn-primary btn-sm" asp-action="Register">Registrera nytt konto</a>
-                    <a class="btn btn-primary btn-sm" asp-action="LoginWithFaceBook">Logga in med facebook</a>
+                    
+                    <a id="loginInWithFacebookLink" asp-action="LoginWithFaceBook">
+                        <i class="fa fa-facebook-official" style="font-size:36px;color:blue"></i>
+                        Logga in med facebook
+                    </a>
                 </form>
 
             </div>

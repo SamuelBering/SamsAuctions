@@ -27,17 +27,13 @@
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">
         <p>
-
-
             <input type="hidden" name="sortOrder" value="@Model.CurrentSortOrder" />
-            @*Titel: <input type="text" name="TitelFilter" value="@ViewData["CurrentTitelFilter"]" />*@
-            @*Category: <input type="text" name="CategoryFilter" value="@ViewData["CurrentCategoryFilter"]" />*@
+        
             Titel: <input asp-for="TitleFilter" />
             Beskrivning: <input asp-for="DescriptionFilter" />
             <button type="submit" value="Sök">
                 <span class="glyphicon glyphicon-search"></span> Sök
-            </button>
-            @*<input type="submit" value="Sök" class="btn btn-default" /> |*@
+            </button>    
             <a asp-action="Index">Tillbaka till hela listan</a>
         </p>
     </div>
@@ -98,10 +94,8 @@
         @foreach (var item in Model.Auctions)
         {
             <tr>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.AuctionId">
+                <td>                
                         @Html.DisplayFor(modelItem => item.Title)
-                    </a>
                 </td>
                 <td>
                     @item.Description
@@ -164,12 +158,7 @@
                            data-ajax-update="#modalContainer">
                             <span data-toggle="tooltip" title="Ta bort auktion" class="glyphicon glyphicon-remove"></span>
                         </a>
-                        @*<form class="auctionIcons" method="post" asp-action="Delete">
-                                <input type="hidden" name="id" value="@item.AuctionId">
-                                <button type="submit">
-                                    <span data-toggle="tooltip" title="Ta bort" class="glyphicon glyphicon-remove"></span>
-                                </button>
-                            </form>*@
+                      
                     }
                 </td>
             </tr>
@@ -203,13 +192,27 @@
         }
 
         function onCompleteLoadingEditModal() {
-            document.querySelector("#editAuctionForm").addEventListener("submit", function (e) {
-                var $startDate = new Date($("#editAuctionForm #startDate").val());
-                var $endDate = new Date($("#editAuctionForm #endDate").val());
 
-                $('#editAuctionModal').modal('hide');
-                startSpinAnimation();
+            document.querySelector("#editAuctionForm").addEventListener("submit", function (e) {
+                var startDate = new Date($("#editAuctionForm #startDate").val());
+                var endDate = new Date($("#editAuctionForm #endDate").val());
+
+                if (endDate <= startDate) {
+                    $("#editAuctionForm #customDatesValidation").text("Slutdatum måste vara senare än startdatum");
+                    e.preventDefault();
+                    return;
+                }
+                else
+                    $("#editAuctionForm #customDatesValidation").text("");
+
+
+                if ($("#editAuctionForm").valid()) {
+                    $('#editAuctionModal').modal('hide');
+                    startSpinAnimation();
+                }
+              
             });
+
             stopSpinAnimation();
             $.validator.unobtrusive.parse($("#editAuctionForm"));
             $('#editAuctionModal').modal('show');

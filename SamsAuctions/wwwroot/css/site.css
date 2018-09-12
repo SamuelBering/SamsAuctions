@@ -1,4 +1,9 @@
-﻿.custom-select[multiple]{
+﻿#loginInWithFacebookLink {
+    vertical-align: middle;
+    display: inline-block;
+    margin-left: 30px;
+}
+.custom-select[multiple]{
     height:40px;
 }
 

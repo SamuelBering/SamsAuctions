@@ -34,7 +34,7 @@ namespace SamsAuctions.Models.ViewModels
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (EndDate < StartDate)
+            if (EndDate <= StartDate)
             {
                 yield return
                          new ValidationResult(errorMessage: "Slutdatum måste vara senare än startdatum",
