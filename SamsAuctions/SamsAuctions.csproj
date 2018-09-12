@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="appsettingsBackup.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\Lib\Bootstrap\" />
   </ItemGroup>
 

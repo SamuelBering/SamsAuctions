@@ -39,7 +39,13 @@ namespace Users.Controllers
         [AllowAnonymous]
         public IActionResult LoginWithFaceBook()
         {
-            var properties = signInManager.ConfigureExternalAuthenticationProperties("Facebook", Url.Action("LoginFacebookCallback", "Account"));
+            string scheme = HttpContext.Request.Scheme;
+
+            var redirectUri = @"https://samsauctions20180912010303.azurewebsites.net/account/loginfacebookcallback";
+
+            var properties = signInManager.ConfigureExternalAuthenticationProperties("Facebook", Url.Action("LoginFacebookCallback", "Account", null, scheme));
+            //var properties = signInManager.ConfigureExternalAuthenticationProperties("Facebook", redirectUri);
+
             return Challenge(properties, "Facebook");
         }
 
@@ -50,9 +56,9 @@ namespace Users.Controllers
             AppUser user = new AppUser
             {
                 UserName = associateAccountViewModel.Email,
-                FirstName=associateAccountViewModel.FirstName,
-                LastName=associateAccountViewModel.LastName,
-                Email=associateAccountViewModel.Email,        
+                FirstName = associateAccountViewModel.FirstName,
+                LastName = associateAccountViewModel.LastName,
+                Email = associateAccountViewModel.Email,
             };
 
             IdentityResult result = await userManager.CreateAsync(user);
