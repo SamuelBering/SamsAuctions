@@ -6,7 +6,6 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                @*<a asp-action="#" class="close">&times;</a>*@
                
                 <h4 class="modal-title">Avslutat auktion: @Model.Title</h4>
             </div>
@@ -17,13 +16,13 @@
                 </p>
                 <p>
                     <strong>@Html.DisplayNameFor(model => model.ReservationPrice): </strong>
-                    @Model.ReservationPrice
+                    @Model.ReservationPrice.ToString("C", new CultureInfo("sv-SE"))
                 </p>
                 <p>
                     @if (Model.highestBid > 0)
                     {
                         <strong>@Html.DisplayNameFor(model => model.highestBid): </strong>
-                        @Model.highestBid
+                        @Model.highestBid.ToString("C", new CultureInfo("sv-SE"))
                     }
                     else
                     {
@@ -35,7 +34,7 @@
                 </p>
                 <p>
                     <strong>@Html.DisplayNameFor(model => model.EndDate): </strong>
-                    @Model.EndDate
+                    @Model.EndDate.ToString("yyyy-MM-dd HH:mm", CultureInfo.CreateSpecificCulture("sv-SE"))
                 </p>
             </div>
             <div class="modal-footer">

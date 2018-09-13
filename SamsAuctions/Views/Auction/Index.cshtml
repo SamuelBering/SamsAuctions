@@ -28,12 +28,12 @@
     <div class="form-actions no-color">
         <p>
             <input type="hidden" name="sortOrder" value="@Model.CurrentSortOrder" />
-        
+
             Titel: <input asp-for="TitleFilter" />
             Beskrivning: <input asp-for="DescriptionFilter" />
             <button type="submit" value="Sök">
                 <span class="glyphicon glyphicon-search"></span> Sök
-            </button>    
+            </button>
             <a asp-action="Index">Tillbaka till hela listan</a>
         </p>
     </div>
@@ -94,20 +94,20 @@
         @foreach (var item in Model.Auctions)
         {
             <tr>
-                <td>                
-                        @Html.DisplayFor(modelItem => item.Title)
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
                 </td>
                 <td>
                     @item.Description
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.StartDate)
+                    @item.StartDate.ToString("yyyy-MM-dd HH:mm", CultureInfo.CreateSpecificCulture("sv-SE"))
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.EndDate)
+                    @item.EndDate.ToString("yyyy-MM-dd HH:mm", CultureInfo.CreateSpecificCulture("sv-SE"))
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ReservationPrice)
+                    @item.ReservationPrice.ToString("C", new CultureInfo("sv-SE"))
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedBy)
@@ -127,6 +127,7 @@
                            asp-action="GetClosedAuctionDetails" data-ajax-method="GET"
                            asp-route-auctionId="@item.AuctionId"
                            data-ajax-mode="replace"
+                           data-ajax-begin="startSpinAnimation"
                            data-ajax-complete="onCompleteLoadingClosedAuctionDetailsModal"
                            data-ajax-update="#modalContainer">
                             <span data-toggle="tooltip" title="Visa detaljer" class="glyphicon glyphicon-new-window"></span>
@@ -158,7 +159,7 @@
                            data-ajax-update="#modalContainer">
                             <span data-toggle="tooltip" title="Ta bort auktion" class="glyphicon glyphicon-remove"></span>
                         </a>
-                      
+
                     }
                 </td>
             </tr>
@@ -210,7 +211,7 @@
                     $('#editAuctionModal').modal('hide');
                     startSpinAnimation();
                 }
-              
+
             });
 
             stopSpinAnimation();
@@ -219,6 +220,7 @@
         }
 
         function onCompleteLoadingClosedAuctionDetailsModal() {
+            stopSpinAnimation();
             $('#closedAuctionDetailsModal').modal('show');
         }
 

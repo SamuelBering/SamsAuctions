@@ -9,6 +9,7 @@ using SamsAuctions.Models;
 using SamsAuctions.Models.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -76,7 +77,7 @@ namespace SamsAuctions.Controllers
 
             if (amount <= (highestBidAmount))
             {
-                return Json(data: $"Du måste lägga ett bud som är högre än {highestBidAmount.ToString("C")}");
+                return Json(data: $"Du måste lägga ett bud som är högre än {highestBidAmount.ToString("C", new CultureInfo("sv-SE"))}");
             }
 
             return Json(data: true);

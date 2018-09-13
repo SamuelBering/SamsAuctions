@@ -76,7 +76,7 @@ namespace SamsAuctions.BL
             {
                 auction.AnvandarenFarTaBort = false;
 
-                if (auction.SkapadAv == user.UserName)
+                if (auction.SkapadAv == user.UserName && userClaimsPrincipal.IsInRole("Admin"))
                 {
                     auction.AnvandarenFarUppdatera = true;
                     var allBids = await _repository.GetAllBids(groupCode, auction.AuktionID);

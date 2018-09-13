@@ -176,7 +176,7 @@ namespace SamsAuctionsTests
             mockRepo.Setup(repo => repo.GetAllBids(groupCode, 3)).Returns(Task.FromResult(GetBids(3))).Verifiable();
             mockRepo.Setup(repo => repo.GetAllBids(groupCode, 4)).Returns(Task.FromResult(GetBids(4))).Verifiable();
             var userMock = new Mock<ClaimsPrincipal>();
-            //userMock.Setup(user => user.IsInRole("Admin")).Returns(isAdmin);
+            userMock.Setup(user => user.IsInRole("Admin")).Returns(true);
             var userStoreMock = new Mock<IUserStore<AppUser>>();
             var userManagerMock = new Mock<UserManager<AppUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
             userManagerMock.Setup(userManager => userManager.GetUserAsync(userMock.Object)).Returns(Task.FromResult(GetTestAppUser(firstName, lastName, userName)));

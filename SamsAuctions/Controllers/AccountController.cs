@@ -40,12 +40,7 @@ namespace Users.Controllers
         public IActionResult LoginWithFaceBook()
         {
             string scheme = HttpContext.Request.Scheme;
-
-            var redirectUri = @"https://samsauctions20180912010303.azurewebsites.net/account/loginfacebookcallback";
-
             var properties = signInManager.ConfigureExternalAuthenticationProperties("Facebook", Url.Action("LoginFacebookCallback", "Account", null, scheme));
-            //var properties = signInManager.ConfigureExternalAuthenticationProperties("Facebook", redirectUri);
-
             return Challenge(properties, "Facebook");
         }
 
@@ -106,15 +101,8 @@ namespace Users.Controllers
             if (ModelState.IsValid)
             {
                 var properties = signInManager.ConfigureExternalAuthenticationProperties("Facebook", Url.Action("AssociateAccountCallback", "Account"));
-
                 HttpContext.Session.SetJson("AssociateAccountViewModel", associateAccountVM);
-
-
                 return Challenge(properties, "Facebook");
-                //ExternalLoginInfo info = ViewData["ExternalLoginInfo"] as ExternalLoginInfo;
-                //var debug = ViewData["Samuel"] as string;
-
-                //var info = HttpContext.Session.GetJson<ExternalLoginInfo>("ExternalLoginInfo");
             }
 
             return View("AssociateAccount", associateAccountVM);
@@ -126,7 +114,6 @@ namespace Users.Controllers
         {
 
             ExternalLoginInfo info = await signInManager.GetExternalLoginInfoAsync();
-            //HttpContext.Session.SetJson("ExternalLoginInfo", info);
 
             await signInManager.SignOutAsync();
             var signInResult = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
@@ -272,63 +259,7 @@ namespace Users.Controllers
         }
 
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(EditModel editModel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        AppUser user = await userManager.GetUserAsync(User);
-
-        //        var isValidPassword = await userManager.CheckPasswordAsync(user, editModel.Password);
-        //        if (!isValidPassword)
-        //        {
-        //            ModelState.AddModelError(nameof(EditModel.Password), "Felaktigt lösenord");
-        //            return View(editModel);
-        //        }
-
-        //        if (editModel.NewPassword != null)
-        //        {
-        //            if (editModel.Password == null)
-        //            {
-        //                ModelState.AddModelError(nameof(EditModel.Password), "Ange ditt nuvarande lösenord");
-        //                return View(editModel);
-        //            }
-
-        //            var result = await userManager.ChangePasswordAsync(user, editModel.Password, editModel.NewPassword);
-
-        //            if (!result.Succeeded)
-        //            {
-        //                AddModelError("", result);
-        //                return View(editModel);
-        //            }
-        //        }
-
-        //        user.FirstName = editModel.FirstName;
-        //        user.LastName = editModel.LastName;
-        //        user.Email = editModel.Email;
-        //        user.StreetAddress = editModel.StreetAddress;
-        //        user.PostTown = editModel.PostTown;
-        //        user.ZipCode = editModel.ZipCode;
-
-        //        var updateResult = await userManager.UpdateAsync(user);
-
-        //        if (!updateResult.Succeeded)
-        //        {
-        //            AddModelError("", updateResult);
-        //            return View(editModel);
-        //        }
-
-        //        return RedirectToAction(nameof(ConfirmAccountUpdate));
-        //    }
-
-        //    return View(editModel);
-        //}
-
-        //public ViewResult ConfirmAccountUpdate()
-        //{
-        //    return View();
-        //}
+   
 
         private void AddModelError(string key, IdentityResult identityResult)
         {
@@ -336,21 +267,6 @@ namespace Users.Controllers
                 ModelState.AddModelError(key, error.Description);
         }
 
-        //public async Task<ViewResult> Edit()
-        //{
-        //    AppUser user = await userManager.GetUserAsync(User);
-
-        //    EditModel userVM = new EditModel
-        //    {
-        //        FirstName = user.FirstName,
-        //        LastName = user.LastName,
-        //        Email = user.Email,
-        //        PostTown = user.PostTown,
-        //        StreetAddress = user.StreetAddress,
-        //        ZipCode = user.ZipCode
-        //    };
-
-        //    return View(userVM);
-        //}
+     
     }
 }

@@ -12,11 +12,10 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-
-                    <td>@item.Amount.ToString("C")</td>
-                    <td>@item.Bidder</td>
-                </tr>
+            <tr>               
+                <td>@item.Amount.ToString("C", new CultureInfo("sv-SE"))</td>
+                <td>@item.Bidder</td>
+            </tr>
             }
         </tbody>
     </table>

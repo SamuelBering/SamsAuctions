@@ -9,8 +9,8 @@
 <p>
     <strong>@Html.DisplayNameFor(m => m.Title)</strong>: @Model.Title <br>
     <strong>@Html.DisplayNameFor(m => m.Description)</strong>: @Model.Description <br>
-    <strong>@Html.DisplayNameFor(m => m.ReservationPrice)</strong>: @Model.ReservationPrice <br>
-    <strong>@Html.DisplayNameFor(m => m.EndDate)</strong>: @Model.EndDate.ToShortDateString()<br>
+    <strong>@Html.DisplayNameFor(m => m.ReservationPrice)</strong>: @Model.ReservationPrice.ToString("C", new CultureInfo("sv-SE"))<br>
+    <strong>@Html.DisplayNameFor(m => m.EndDate)</strong>: @Model.EndDate.ToString("yyyy-MM-dd HH:mm",CultureInfo.CreateSpecificCulture("sv-SE"))<br>
 </p>
 
 <p>
